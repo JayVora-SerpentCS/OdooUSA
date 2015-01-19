@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp> 
+	<data>
+		<template id="report_label_print_stock_packages">
+			<t t-call="report.html_container"> 
+				<t t-foreach="docs" t-as="o"> 
+					 <t t-call="report.external_layout">
+					 	<div class="page">
+					 		<div class="oe_structure" />
+					 		<div class="row">
+					 			<table class="table table condensed">
+ 								 	<tr>
+ 								 		<td>
+ 								 		 	<span t-esc="o.logo" />					 		
+ 								 		</td>				 								 			
+ 								 	</tr>
+					 			</table>
+					 		</div>
+					 	</div> 
+					 </t>
+				</t>
+			</t>
+				
+		</template>
+	</data>
+</openerp>
+

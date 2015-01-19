@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<report id="ship_label_print"
+				model="stock.packages"
+	            string="Print Label" 
+				report_type="qweb-pdf"
+				name="shipping_api.report_label_print_stock_packages"
+	            file="shipping_api.report_label_print_stock_packages" />
+		
+		<report id="ship_log_label_print"
+				model="shipping.move"
+	            string="Print Label" 
+				report_type="qweb-pdf" 
+				name="shipping_api.report_label_print_stock_packages"
+	            file="shipping_api.report_label_print_stock_packages" />
+		
+		<report id="quick_ship_label_print"
+				model="quick.ship"
+	            string="Print Label" 
+				report_type="qweb-pdf" 
+				name="shipping_api.report_label_print_stock_packages"
+	            file="shipping_api.report_label_print_stock_packages" />
+		
+		<report id="multiple_label_print"
+				model="stock.picking"
+	            string="Print Label"
+				report_type="qweb-pdf" 
+	            name="shipping_api.report_multiple_label"
+				file="shipping_api.report_multiple_label" />
+
+		<report id="summary_report_print"
+				model="shipping.move" 
+	            string="Summary Report"
+				report_type="qweb-pdf"
+				name="shipping_api.report_summary_shipping_move"
+				file="shipping_api.report_summary_shipping_move" />
+
+		<report id="package_packing_slip_print"
+				model="stock.packages"
+	            string="Packing Slips"
+				report_type="qweb-pdf"
+	            name="shipping_api.report_packing_slip_stock_packages"
+				file="shipping_api.report_packing_slip_stock_packages" />
+		
+	</data>
+</openerp>

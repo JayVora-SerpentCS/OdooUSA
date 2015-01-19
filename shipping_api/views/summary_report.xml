@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp> 
+	<data>
+		<template id="report_summary_shipping_move">
+			<t t-call="report.html_container"> 
+				<t t-foreach="docs" t-as="o"> 
+					 <t t-call="report.external_layout">
+					 	<div class="page">
+					 		<div class="oe_structure" />
+					 		<div class="row" align="center">
+					 			<h4><u>Shipping Summary Report</u></h4>
+					 			<p>Date: <span t-esc="formatLang(time.strftime('%Y-%m-%d'), date=True)"/><br/></p>
+					 			<p>Total number of packages :<span t-esc="" /><br/></p>
+								<table class="table table condensed" align="center" style="width:60%;">
+					 				<tr  style="border:1px solid">
+										<th style="border:1px solid">
+											<center>Shipping Method:</center>
+										</th>
+										<th style="border:1px solid">
+											<center>Count:</center>
+										</th>
+					 				</tr>
+					 				<tr>
+										<td style="border:1px solid"> 
+											<span t-field="o.get_items()"/>
+										</td>
+										<td style="border:1px solid"> 
+											<span t-field="o[1]"/>
+										</td>
+					 				</tr>
+					 			</table>
+					 		</div>
+					 	</div> 
+					 </t>
+				</t>
+			</t>
+				
+		</template>
+	</data>
+</openerp>
+

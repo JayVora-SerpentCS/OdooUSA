@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<report id="report_control_log_receipt"
+	            string="Control Log Receipt"
+	            model="stock.packages"
+				report_type="qweb-pdf" 
+	            name="shipping_ups.report_control_log_receipt_stock_packages"
+				file="shipping_ups.report_control_log_receipt_stock_packages" />
+
+	</data>
+</openerp>

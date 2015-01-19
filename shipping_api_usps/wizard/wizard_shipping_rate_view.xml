@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<!-- Shipping rate wizard -->
+        <record id="view_for_shipping_rate_wizard_usps" model="ir.ui.view">
+            <field name="name">action_for_shipping_rate_wizard_usps</field>
+            <field name="model">shipping.rate.wizard</field>
+             <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="sale_negotiated_shipping.view_for_shipping_rate_wizard"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='rate_select']" position="before" >
+					<group colspan="4" col="4" attrs="{'invisible':['|',('rate_selection','=','rate_card'),('ship_company_code','!=','usps') ]}">
+						<separator string="USPS" colspan="4"/>
+						<field name='usps_service_type' attrs="{'required': [('ship_company_code','=','usps')]}"/>
+						
+						<field name='usps_package_location' attrs="{'required': [('ship_company_code','=','usps')]}"/>
+						
+						<field name="usps_container"/>
+						<field name="usps_size" invisible="1"/>
+						
+                        <field name="usps_first_class_mail_type" attrs="{'required':[('usps_service_type','in',('First Class','First Class HFP Commercial'))], 'invisible':[('usps_service_type','not in',('First Class','First Class HFP Commercial'))]}" />
+                        <!-- group colspan="4" col="4" attrs="{'invisible':[('usps_size','!=','LARGE')]}" >
+                            <separator string = "USPS Dimension" colspan="4" />
+                            <field name="usps_width" />
+                            <field name="usps_length" />
+                            <field name="usps_height" />
+                            <field name="usps_girth" attrs="{'invisible':['|', ('usps_container','!=','Non-Rectangular'), ('usps_container','!=','Variable'), ('usps_container','!=','')]}" />
+                        </group -->
+					</group>
+            	</xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

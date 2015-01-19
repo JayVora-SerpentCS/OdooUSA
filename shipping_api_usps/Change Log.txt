@@ -1,0 +1,34 @@
+===============================================================================
+ Version Change Log (shipping_api_usps)
+===============================================================================
+@TODO : SECURITY
+2.2 on 13-05-2013 by Dhirendra
+	* Change a string and request url condition
+
+2.1 on 2013-04-12 by Dhirendra
+	* Improve module code and it make a compatible in 7.0
+
+2.0 on 2013-02-25 by Dhirendra
+    * Migrate module from OpenERP Version 6.1 to 7.0.
+
+1.7 on 2012-11-27 by Naitik
+    * Migrate module from OpenERP Version 6.0 to 6.1.
+
+1.6 on 2011-12-29 by Arif
+	* Shipment details from Sales Order to Delivery Order
+
+1.5 - 2011-12-27 by Arif
+	* Added required fields in sales order, stock and wizard for ship charge
+	* Ship rate request and response
+
+1.4 - 2011-12-23 by Arif
+	* Ship rate request - Ship charge calculation in Sales Order
+	
+1.3 - 2011-12-12 by Arif
+	* Fixed bug on Label printing
+	
+1.2 - 2011-12-12 by Arif
+	* Fixed bug on Process shipment
+
+1.0 (2011-10-17) by Arif
+	* Basic functions for USPS

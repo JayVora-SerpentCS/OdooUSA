@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="logistic_company_form_usps" model="ir.ui.view">
+			<field name="name">logistic_company_form_usps</field>
+			<field name="model">logistic.company</field>
+			<field name="inherit_id" ref="shipping_api.view_form_logistic_company" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Notes']" position="before">
+					<page string="USPS" attrs="{'invisible':[('ship_company_code','!=','usps')]}" >
+					<group>
+						<!-- field name="ups_shipping_account_ids" nolabel='1' colspan="4"/ -->
+						<field name='usps_userid' attrs="{'required':[('ship_company_code','=','usps')]}"/>
+						<newline />
+						<field name='usps_url_test' attrs="{'required':[('ship_company_code','=','usps'),('test_mode','=',True)]}"/>
+						<field name='usps_url_secure_test' attrs="{'required':[('ship_company_code','=','usps'),('test_mode','=',True)]}"/>
+						<field name='usps_url' attrs="{'required':[('ship_company_code','=','usps'),('test_mode','=', False)]}"/>
+						<field name='usps_url_secure' attrs="{'required':[('ship_company_code','=','usps'),('test_mode','=',False)]}"/>
+					</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+	</data>
+</openerp>
+    

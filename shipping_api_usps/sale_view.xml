@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	  	<record model="ir.ui.view" id="sale_order_form_usps">
+			<field name="name">sale.order.form.usps</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="shipping_api.shipping_api_sale_order_form_inherited"/>
+			<field name="priority" eval="30" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Other Information']" position="inside">
+					<group colspan="4" col="4" attrs="{'invisible': [('ship_company_code','=','ups')]}">
+						<separator string="USPS" colspan="4"/>
+						<field name='usps_service_type' attrs="{'required': [('ship_company_code','=','usps')]}"/>
+						
+						<field name='usps_package_location' invisible="1" attrs="{'required': [('ship_company_code','=','usps')]}"/>
+						<field name="usps_container"/>
+						<field name="usps_size"/>
+						<field name="usps_packaging_type"/>
+                        <field name="usps_first_class_mail_type" attrs="{'required':[('usps_service_type','in',('First Class','First Class HFP Commercial'))], 'invisible':[('usps_service_type','not in',('First Class','First Class HFP Commercial'))]}"/>
+                        <!-- group colspan="4" col="4" attrs="{'invisible':[('usps_size','!=','LARGE')]}" >
+                            <separator string = "USPS Dimension" colspan="4" />
+                            <field name="usps_width" />
+                            <field name="usps_length" />
+                            <field name="usps_height" />
+                            <field name="usps_girth" attrs="{'invisible':['|', ('usps_container','!=','Non-Rectangular'), ('usps_container','!=','Variable'), ('usps_container','!=','')]}" />
+                        </group -->
+					</group>
+				</xpath>
+
+			</field>
+		</record> 
+	</data>
+</openerp>
+		

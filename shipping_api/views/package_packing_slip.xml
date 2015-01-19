@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp> 
+	<data>
+		<template id="report_packing_slip_stock_packages">
+			<t t-call="report.html_container"> 
+				<t t-foreach="docs" t-as="o"> 
+					 <t t-call="report.external_layout">
+					 	<div class="page">
+					 		<div class="oe_structure" />
+					 		<div class="row">
+				 				<table style="border:1px solid;width:100%">
+				 					<tr style="border:1px solid;">
+				                        <td style="border-bottom:1px solid;width:60%;"></td>
+				                        <td style="border-bottom:1px solid;width:100%;">
+				                        	<table style="border:1px solid">
+												<tr style="border:1px solid;">
+													<td style="width:40%">
+													</td>
+													<td style="width:40%"><strong><center><span t-esc="_get_count(o.pick_id, o.id)"/></center></strong></td>
+													<td style="width:40%"></td>												
+												</tr>
+												<tr style="border:1px solid;">
+													<td>
+													</td>
+													<td><strong><center>PACKING SLIP</center></strong></td>
+													<td></td>												
+												</tr>
+												<tr>
+													<td style="border:1px solid;">
+														<strong><center>CUSTOMER NO</center></strong>
+													</td>
+													<td style="border:1px solid;"> 
+														<strong><center>PICK TICKET #</center></strong>
+													</td>
+													<td style="border:1px solid;">
+														<strong><center>DATE</center></strong>
+													</td>												
+												</tr>
+												<tr>
+													<td style="border:1px solid">
+														<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_id.ref" />
+													</td>
+													<td style="border:1px solid">
+														<span t-esc="o.pick_id.name" />
+													</td>
+													<td style="border:1px solid"> 
+														<span t-esc="formatLang(time.strftime('%Y-%m-%d'), date=True)"/>
+													</td>
+								 				</tr>
+											</table>
+				                        </td>
+				                    </tr>
+				 				</table>
+					 			<br/><br/><br/>
+								<table style="border-bottom:1px solid;width:100%;">
+									<tr>
+										<td style="border:1px solid"><strong>SOLD TO : </strong><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_id.name" /><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_order_id.street" /><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_order_id.street2" /><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_order_id.city and o.pick_id.sale_id.partner_order_id.city" /><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_order_id.state_id and o.pick_id.sale_id.partner_order_id.state_id.code"/><br/>
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.partner_order_id.zip" /><br/>
+										</td>
+										<td style="border:1px solid"><strong>SHIPPED TO :  </strong><br/>
+											<span t-esc="o.pick_id.partner_id and o.pick_id.partner_id.name" /><br/>
+											<span t-esc="o.pick_id.partner_id and o.pick_id.partner_id.street"/><br/>
+											<span t-esc="o.pick_id.partner_id and o.pick_id.partner_id.street2"/><br/>
+											<span t-esc="o.pick_id.partner_id and o.pick_id.partner_id.city and o.pick_id.partner_id.city"/><br/>
+										</td>
+					 				</tr>
+								</table>
+								<br/><br/>
+								<table style="border-bottom:1px solid;width:100%;">
+									<tr>
+										<th style="border:1px solid">Order No</th>
+										<th style="border:1px solid">Order Date</th>
+										<th style="border:1px solid">Terms</th>
+										<th style="border:1px solid">P.O.No</th>
+										<th style="border:1px solid">Sales Rep</th>
+										<th style="border:1px solid">Ship Via</th>
+						 			</tr>
+						 			<tr>
+						 				<td style="border:1px solid">
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.name" />
+										</td>
+										<td style="border:1px solid">
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.date_order" />
+										</td>
+										<td style="border:1px solid">
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.payment_term and o.pick_id.sale_id.payment_term.name" />
+										</td>
+										<td style="border:1px solid">
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.client_order_ref" />
+										</td>
+										<td style="border:1px solid">
+											<span t-esc="o.pick_id.sale_id and o.pick_id.sale_id.user_id and o.pick_id.sale_id.user_id.name" />
+										</td>
+										<td style="border:1px solid">
+											<span t-esc="o.pick_id.ups_service and o.pick_id.ups_service.description" />
+										</td>					 			
+						 			</tr>							
+								</table>
+								<br/><br/>
+								<table style="border-bottom:1px solid;width:100%;">
+									<tr>
+										<th style="border:1px solid">ITEM</th>
+										<th style="border:1px solid">ITEM DESCRIPTION</th>
+										<th style="border:1px solid" class="text-right">ORDER QTY</th>
+										<th style="border:1px solid" class="text-right">PACKED QTY</th>
+					 				</tr>
+					 				<tr t-foreach="_get_package_lines(o)" t-as="item">
+					 					<td style="border:1px solid" >
+					 						<span t-esc="item['code']" />
+					 					</td>
+					 					<td style="border:1px solid"> 
+											<span t-esc="item['name']" />
+										</td>
+										<td style="border:1px solid" class="text-right">
+											<span t-esc="_get_qty(item['sale_id'], item['id'])" />
+										</td>
+										<td style="border:1px solid" class="text-right">
+											<span t-esc="formatLang(item['qty'])" />
+										</td>
+					 				</tr><br/><br/>
+					 				<table>
+					 					<tr>
+					 						<br/><br/><br/>				 					
+					 					</tr>
+					 				</table>
+									<table style="border-bottom:1px solid;width:100%;">
+										<tr t-foreach="_get_package_lines(o)" t-as="item">
+											<td style="border:1px solid">TOTAL QTY</td>
+											<td style="border:1px solid"> 
+												<span t-esc="formatLang(_get_total(item['sale_id'], o),2)" />
+											</td>
+											<td style="border:1px solid"> 
+												<span t-esc="formatLang(_get_total_packed_qty(o),2)" />
+											</td>
+						 				</tr>
+						 				<tr>
+						 					<td style="border:1px solid">COMMENT :</td>
+						 					<td style="border:1px solid"></td>
+						 					<td style="border:1px solid"></td>
+						 				</tr>							
+									</table>						
+								</table>
+					 		</div>
+					 	</div> 
+					 </t>
+				</t>
+			</t>
+				
+		</template>
+	</data>
+</openerp>
+
