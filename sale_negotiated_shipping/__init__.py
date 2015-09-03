@@ -21,10 +21,10 @@
 #
 ##############################################################################
 
-import sale_negotiated_shipping
-import sale
-import stock
-import account_invoice
-import wizard
+from . import sale_negotiated_shipping
+from . import sale
+from . import stock
+from . import account_invoice
+from . import wizard
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

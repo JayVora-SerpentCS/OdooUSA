@@ -29,7 +29,7 @@ class shipping_rate_wizard(models.TransientModel):
     
     @api.model
     def _get_company_code(self):
-        return []
+        return [('fedex','Fedex')]
     
     @api.multi
     def onchange_logis_company(self, logistic_company_id):
@@ -96,7 +96,7 @@ class shipping_rate_wizard(models.TransientModel):
     
     rate_selection =    fields.Selection([('rate_card', 'Rate Card'), ('rate_request', 'Rate Request')], default=_get_rate_selection, string='Ship Rate Method')
     logis_company =     fields.Many2one('logistic.company', string='Shipper Company', help='Name of the Logistics company providing the shipper services.')
-    ship_company_code = fields.Selection('_get_company_code', string='Ship Company', size=64)
+    ship_company_code = fields.Selection(_get_company_code, string='Ship Company', size=64)
     status_message =    fields.Char(string='Status', size=128, readonly=True)
    
 

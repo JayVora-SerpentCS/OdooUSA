@@ -123,7 +123,7 @@ class partner_addr_validate(models.TransientModel):
             address_item = self.env['res.partner'].browse(default_addr_id)
             if address_item.address_validation_method is 'none':
                 return { 'value':ret }
-            inv_return_data = self.env[address_validation_method].address_validation(default_addr_id)
+            inv_return_data = self.env[address_item.address_validation_method].address_validation(default_addr_id)
             ret['error_msg'] = inv_return_data['error_msg']
             ret['address_list'] = inv_return_data['address_list']
             ret['address_id'] = default_addr_id

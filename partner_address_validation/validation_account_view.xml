@@ -133,15 +133,9 @@
 
 		<menuitem id="menu_address_validation_accounts" name="Address Validation Accounts"
 			parent="base.menu_administration" />
-
-		<menuitem id="ups_account_menu" name="UPS Account"
-			parent="menu_address_validation_accounts" action="action_for_ups_account_menu" />
-
+		
 		<menuitem id="fedex_account_menu" name="FedEx Account"
 			parent="menu_address_validation_accounts" action="action_for_fedex_account_menu" />
-
-		<menuitem id="usps_account_menu" name="USPS Account"
-			parent="menu_address_validation_accounts" action="action_for_usps_account_menu" />
 
 	</data>
 </openerp>

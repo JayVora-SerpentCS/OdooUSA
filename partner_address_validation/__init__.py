@@ -21,11 +21,11 @@
 #
 ##############################################################################
 
-import res_company
-import partner_address_validation
-import ups_account
-import fedex_account
-import usps_account
-import wizard
+from . import res_company
+from . import partner_address_validation
+from . import ups_account
+from . import fedex_account
+from . import usps_account
+from . import wizard
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

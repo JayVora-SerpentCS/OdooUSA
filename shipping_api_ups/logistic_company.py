@@ -33,7 +33,7 @@ class logistic_company(models.Model):
         res.append(('ups', 'UPS'))
         return res
 
-    ship_company_code =     fields.Selection('_get_company_code', string='Logistic Company', required=True, size=64)
+    ship_company_code =     fields.Selection(_get_company_code, string='Logistic Company', required=True, size=64)
     ship_req_web =          fields.Char(string='Ship Request Website', size=256 )
     ship_req_port =         fields.Integer(string='Ship Request Port')
     ship_req_test_web =     fields.Char(string='Test Ship Request Website', size=256 )

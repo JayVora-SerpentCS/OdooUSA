@@ -59,7 +59,7 @@ class account_invoice(models.Model):
         return super(account_invoice, invoice)._get_invoice_from_line()
 
     @api.multi
-    def finalize_invoice_move_lines(self, invoice, move_lines):
+    def finalize_invoice_move_lines(self, move_lines):
         """
         finalize_invoice_move_lines(cr, uid, invoice, move_lines) -> move_lines
         Hook method to be overridden in additional modules to verify and possibly alter the
@@ -70,60 +70,61 @@ class account_invoice(models.Model):
         Returns:
             The (possibly updated) final move_lines to create for this invoice
         """
-        move_lines = super(account_invoice, self).finalize_invoice_move_lines(invoice, move_lines)
-        if invoice.type == "out_refund":
-            account = invoice.account_id.id
-        else:
-            account = invoice.sale_account_id.id
-        if invoice.type in ('out_invoice','out_refund')  and account and invoice.shipcharge:
-            lines1 = {
-                'analytic_account_id': False,
-                'tax_code_id': False,
-                'analytic_lines': [],
-                'tax_amount': False,
-                'name': 'Shipping Charge',
-                'ref': '',
-                'currency_id': False,
-                'credit': invoice.shipcharge,
-                'product_id': False,
-                'date_maturity': False,
-                'debit': False,
-                'date': time.strftime("%Y-%m-%d"),
-                'amount_currency': 0,
-                'product_uom_id':  False,
-                'quantity': 1,
-                'partner_id': invoice.partner_id.id,
-                'account_id': account
-            }
-            move_lines.append((0, 0, lines1))
-            has_entry = False
-            for move_line in move_lines:
-                journal_entry = move_line[2]
-                if journal_entry['account_id'] == invoice.partner_id.property_account_receivable.id:
-                    journal_entry['debit'] += invoice.shipcharge
-                    has_entry = True
-                    break
-            if not has_entry:       # If debit line does not exist create one
-                lines2 = {
+        move_lines = super(account_invoice, self).finalize_invoice_move_lines(move_lines)
+        for rec in self:
+            if rec.type == "out_refund":
+                account = rec.account_id.id
+            else:
+                account = rec.sale_account_id.id
+            if rec.type in ('out_invoice','out_refund')  and account and rec.shipcharge:
+                lines1 = {
                     'analytic_account_id': False,
                     'tax_code_id': False,
                     'analytic_lines': [],
                     'tax_amount': False,
-                    'name': '/',
+                    'name': 'Shipping Charge',
                     'ref': '',
                     'currency_id': False,
-                    'credit': False,
+                    'credit': rec.shipcharge,
                     'product_id': False,
                     'date_maturity': False,
-                    'debit': invoice.shipcharge,
+                    'debit': False,
                     'date': time.strftime("%Y-%m-%d"),
                     'amount_currency': 0,
-                    'product_uom_id': False,
+                    'product_uom_id':  False,
                     'quantity': 1,
-                    'partner_id': invoice.partner_id.id,
-                    'account_id': invoice.partner_id.property_account_receivable.id
+                    'partner_id': rec.partner_id.id,
+                    'account_id': account
                 }
-                move_lines.append((0, 0, lines2))
+                move_lines.append((0, 0, lines1))
+                has_entry = False
+                for move_line in move_lines:
+                    journal_entry = move_line[2]
+                    if journal_entry['account_id'] == rec.partner_id.property_account_receivable.id:
+                        journal_entry['debit'] += rec.shipcharge
+                        has_entry = True
+                        break
+                if not has_entry:       # If debit line does not exist create one
+                    lines2 = {
+                        'analytic_account_id': False,
+                        'tax_code_id': False,
+                        'analytic_lines': [],
+                        'tax_amount': False,
+                        'name': '/',
+                        'ref': '',
+                        'currency_id': False,
+                        'credit': False,
+                        'product_id': False,
+                        'date_maturity': False,
+                        'debit': rec.shipcharge,
+                        'date': time.strftime("%Y-%m-%d"),
+                        'amount_currency': 0,
+                        'product_uom_id': False,
+                        'quantity': 1,
+                        'partner_id': rec.partner_id.id,
+                        'account_id': rec.partner_id.property_account_receivable.id
+                    }
+                    move_lines.append((0, 0, lines2))
         return move_lines
     
 
@@ -146,7 +147,7 @@ class invoice_line(models.Model):
         """Compute the net weight of the given Invoice Lines."""
         result = 0.0
         for line in self.product_id:
-            result+= line.weight_net * line.quantity
+            result+= line.weight_net * line.qty_available
         self.weight_net= result
     
     
@@ -163,7 +164,7 @@ class account_invoice_tax_inherit(models.Model):
         tax_grouped = super(account_invoice_tax_inherit, self).compute(invoice_id)
         tax_obj = self.env['account.tax']
         cur_obj = self.env['res.currency']
-        inv = self.env['account.invoice'].browse(invoice_id)
+        inv = invoice_id
         cur = inv.currency_id
         company_currency = inv.company_id.currency_id.id
         tax_ids = inv.ship_method_id and inv.ship_method_id.shipment_tax_ids

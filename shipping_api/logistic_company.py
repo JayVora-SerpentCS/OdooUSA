@@ -31,7 +31,7 @@ class logistic_company(models.Model):
         return []
     
     name =              fields.Char(string='Name', size=32, required=True, select=1)
-    ship_company_code = fields.Selection('_get_company_code', string='Logistic Company')
+    ship_company_code = fields.Selection(_get_company_code, string='Logistic Company')
     url =               fields.Char(string='Website',size=256 , select=1)
     company_id =        fields.Many2one('res.company', string='Company')
     test_mode =         fields.Boolean(string='Test Mode')

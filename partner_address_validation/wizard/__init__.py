@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-import saleorder_address_validation
-import wizard_address_validation
+from . import saleorder_address_validation
+from . import wizard_address_validation
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

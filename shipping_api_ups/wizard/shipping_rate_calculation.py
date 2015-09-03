@@ -261,7 +261,7 @@ class shipping_rate_wizard(models.TransientModel):
          return {'domain': {'ups_service_id': domain}}
     
     
-    ship_company_code = fields.Selection('_get_company_code', 'Ship Company', size=64)
+    ship_company_code = fields.Selection(_get_company_code, 'Ship Company', size=64)
     ups_shipper_id = fields.Many2one('ups.account.shipping', string='Shipper')
     ups_service_id = fields.Many2one('ups.shipping.service.type', string='Shipping Service')
     ups_pickup_type = fields.Selection([

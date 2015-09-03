@@ -22,7 +22,7 @@
 ##############################################################################
 
 from openerp import models, fields, api, exceptions
-from fedex.config import FedexConfig
+from openerp.addons.partner_address_validation.fedex.config import FedexConfig
 
 class fedex_account(models.Model):
     
@@ -53,7 +53,7 @@ class fedex_account(models.Model):
             if type(address_id) == type([]):
                 address_id = address_id[0]
             partner_address = self.env['res.partner'].browse(address_id)
-            from fedex.config import FedexConfig
+            from openerp.addons.partner_address_validation.fedex.config import FedexConfig
             
             config_obj = FedexConfig(key=fedex_account.fedex_key,
                              password=fedex_account.fedex_password,

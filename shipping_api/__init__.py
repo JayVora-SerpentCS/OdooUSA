@@ -22,15 +22,15 @@
 ##############################################################################
 
 
-import res_company
-import logistic_company
-import shipping
-import stock_packages
-import stock
-import email_template
-import report
-import sale
-import purchase
-import wizard
+from . import res_company
+from . import logistic_company
+from . import shipping
+from . import stock_packages
+from . import stock
+from . import email_template
+from . import report
+from . import sale
+from . import purchase
+from . import wizard
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

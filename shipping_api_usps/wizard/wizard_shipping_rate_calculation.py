@@ -279,7 +279,7 @@ class shipping_rate_wizard(models.TransientModel):
          ]
         
         
-    ship_company_code =             fields.Selection('_get_company_code', string='Ship Company')
+    ship_company_code =             fields.Selection(_get_company_code, string='Ship Company')
     usps_service_type =             fields.Selection('_get_service_type_usps', string='Service Type')
     usps_package_location =         fields.Selection([
                                                     ('Front Door','Front Door'),

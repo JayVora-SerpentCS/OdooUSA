@@ -92,7 +92,7 @@ class stock_picking(models.Model):
     shipment_identific_no = fields.Char(string='ShipmentIdentificationNumber', size=64)
     tracking_no =           fields.Char(string='TrackingNumber', size=64)
     trade_mark =            fields.Char(related='shipper.trademark', string='Trademark', size=1024)
-    ship_company_code =     fields.Selection('_get_company_code', string='Ship Company', size=64)
+    ship_company_code =     fields.Selection(_get_company_code, string='Ship Company', size=64)
     ups_pickup_type =       fields.Selection([
                                 ('01', 'Daily Pickup'),
                                 ('03', 'Customer Counter'),
@@ -1385,6 +1385,7 @@ class stock_move(models.Model):
             elif package_ids:
                 default_vals = {'package_id':package_ids[0], 'picking_id':[]}
             self.copy(default_vals)
+            print "\n RRRRRRRRRRRR::::::::::::"
         return res
     
 

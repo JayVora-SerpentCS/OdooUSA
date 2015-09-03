@@ -20,16 +20,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 ##############################################################################
-from openerp import models, fields, api
-from openerp import netsvc
+
 import base64
 import time
+from openerp import models, fields, api
+from openerp import netsvc
 import openerp.addons.decimal_precision as dp
 
 class stock_picking(models.Model):
     
     _inherit = "stock.picking"
-    
+    default = {}
     @api.multi
     def onchange_logis_company(self, logistic_company_id):
         company_code = ''
@@ -37,14 +38,6 @@ class stock_picking(models.Model):
             logistic_company_obj = self.env['logistic.company']
             company_code = logistic_company_obj.browse(logistic_company_id).ship_company_code
         res = {'value': {'ship_company_code': company_code}}
-        return res
-    
-    @api.model
-    def copy(self):
-        if default is None:
-            default = {}
-        default['ship_state'] = 'draft'
-        res = super(stock_picking, self).copy(default)
         return res
 
     @api.multi
@@ -79,6 +72,7 @@ class stock_picking(models.Model):
         """Get the picking ids of the given Stock Moves."""
         result = {}
         for line in self.env['stock.move'].browse(self._ids):
+            print "\n line.picking_id ::::::::::::",line.picking_id
             result[line.picking_id.id] = True
         return result.keys()
     
@@ -168,12 +162,12 @@ class stock_picking(models.Model):
     blanket_end_date =      fields.Date(string='Blanket End Date')
     comm_code =             fields.Char(string='Commodity Code', size=256,)
     exp_carrier =           fields.Char(string='ExportingCarrier', size=256)
-    ship_company_code =     fields.Selection('_get_company_code', string='Ship Company', size=64)
+    ship_company_code =     fields.Selection(_get_company_code, string='Ship Company', size=64)
     ship_charge =           fields.Float(string='Value', default=0.0, digits_compute=dp.get_precision('Account'))
     stock_pick_ids =        fields.Many2one('stock.packages', string="Stock Pick ids")
      
-    @api.model
-    def process_ship(self):
+    @api.v7
+    def process_ship(self, cr, uid, ids, context=None):
         return True
 
     @api.multi
@@ -197,6 +191,7 @@ class stock_picking(models.Model):
         ids=self._ids
         if not ids: return []
         packages_ids = []
+        print "=========================="
         for package in self.browse(ids).packages_ids[0]:
             packages_ids.append(package.id)
         datas = {

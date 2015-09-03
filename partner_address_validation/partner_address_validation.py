@@ -51,7 +51,7 @@ class res_partner(models.Model):
         return list
     
     last_address_validation  =  fields.Date(string='Last Address Validation', readonly=True)
-    address_validation_method = fields.Selection('_method_get', string='Address Validation Method')
+    address_validation_method = fields.Selection(_method_get, string='Address Validation Method')
     classification =            fields.Selection([('',''),('0','Unknown'),('1','Commercial'),('2','Residential')], string='Classification')
 
     '''
@@ -130,7 +130,7 @@ class sale_order(models.Model):
     
 
     hide_validate =             fields.Boolean(compute='_validated', string='Hide Validate', store=False)
-    address_validation_method = fields.Selection('_method_get', string='Address Validation Method', default=_get_address_validation_method)
+    address_validation_method = fields.Selection(_method_get, string='Address Validation Method', default=_get_address_validation_method)
     
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -88,7 +88,7 @@ class sale_order(models.Model):
                             ('p_i_a', 'Pay In Advance'),
                             ('pay_pal', 'Paypal'),
                             ('no_charge', 'No Charge')], string='Payment Method')
-    ship_company_code = fields.Selection('_get_company_code', string='Logistic Company', size=64)
+    ship_company_code = fields.Selection(_get_company_code, string='Logistic Company', size=64)
     ups_shipper_id =    fields.Many2one('ups.account.shipping', string='Shipper')
     ups_service_id =    fields.Many2one('ups.shipping.service.type', string='Service Type')
     ups_pickup_type =   fields.Selection([ 

@@ -27,12 +27,11 @@ import openerp.addons.decimal_precision as dp
 class sale_order(models.Model):
     _inherit = "sale.order"
 
-    @api.multi
-    def _make_invoice(self, order, lines):
-        inv_id = super(sale_order, self)._make_invoice(order, lines)
+    def _make_invoice(self, cr, uid, order, lines, context=None):
+        inv_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
         if inv_id:
             if order.sale_account_id:
-                inv_obj = self.env['account.invoice']
+                inv_obj = self.pool.get('account.invoice')
                 inv_obj.write({
                     'shipcharge': order.shipcharge,
                     'ship_method': order.ship_method,

@@ -52,7 +52,7 @@ class logistic_company(models.Model):
         res.append(('usps', 'USPS'))
         return res
     
-    ship_company_code =     fields.Selection('_get_company_code', string='Ship Company', required=True)
+    ship_company_code =     fields.Selection(_get_company_code, string='Ship Company', required=True)
     usps_userid =           fields.Char(string='User ID', size=128)
     usps_url_test =         fields.Char(string='Test Url', size=512)
     usps_url =              fields.Char(string='Production URL', size=512)
@@ -148,7 +148,7 @@ class stock_picking(models.Model):
             ('LARGE', 'Large'),
          ]
         
-    ship_company_code =         fields.Selection('_get_company_code', string='Ship Company', size=64)
+    ship_company_code =         fields.Selection(_get_company_code, string='Ship Company', size=64)
     usps_confirmation_number =  fields.Char(string='Confirmation Number', size=64, readonly=True)
     usps_service_type =         fields.Selection('_get_service_type_usps', string='Service Type', size=100, default='Priority')
     usps_package_location =     fields.Selection([
@@ -481,6 +481,7 @@ class stock_move(models.Model):
             elif package_ids:
                 default_vals = {'package_id':package_ids[0], 'picking_id':[]}
             self.copy(res, default_vals)
+            print "\n res, default_vals ::::::::::::::::",res, default_vals
         return res
     
 
