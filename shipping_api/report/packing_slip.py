@@ -3,6 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,6 +24,7 @@ from openerp.osv import osv
 import time
 from openerp.report import report_sxw
 
+
 class report_packing_slip(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
         super(report_packing_slip, self).__init__(cr, uid, name, context)
@@ -40,6 +42,7 @@ class report_packing_slip(report_sxw.rml_parse):
         lines = []
         line_items = {}
         done_product_ids = []
+
         for rec in package.stock_move_ids:
             line = {}
             if rec.product_id.id not in done_product_ids:
@@ -52,15 +55,15 @@ class report_packing_slip(report_sxw.rml_parse):
                 line_items[rec.product_id.id] = line
             else:
                 line_items[rec.product_id.id]['qty'] += rec.product_qty
-        for line_key,line_value in line_items.items():
+        for line_key, line_value in line_items.items():
             lines.append(line_value)
         return lines
-    
+
     def _get_qty(self, sale, product_id):
         qty = {}
         for line in sale.order_line:
             qty[line.product_id.id] = line.product_uom_qty
-        return qty.get(product_id,0.0)
+        return qty.get(product_id, 0.0)
 
     def _get_count(self, picking, package_id):
         count = 0
@@ -68,7 +71,7 @@ class report_packing_slip(report_sxw.rml_parse):
         for package in picking.packages_ids: 
             count += 1
             page[package.id] = count
-        result = str(page[package_id])+ ' of ' + str(count)
+        result = str(page[package_id]) + ' of ' + str(count)
         return result
 
     def _get_total_packed_qty(self, package):
@@ -88,6 +91,7 @@ class report_packing_slip(report_sxw.rml_parse):
             if line.product_id.id in product_ids:
                 total += line.product_uom_qty
         return total
+
 
 class report_packing_slip_stock_packages(osv.AbstractModel):
     _name = 'report.shipping_api.report_packing_slip_stock_packages'

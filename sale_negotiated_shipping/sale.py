@@ -2,27 +2,27 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2015 Serpent Consulting Services PVT. LTD. (<http://www.serpentcs.com>) 
-#    Copyright (C) 2011 NovaPoint Group LLC (<http://www.novapointgroup.com>)
-#    Copyright (C) 2004-2010 OpenERP SA (<http://www.openerp.com>)
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
+
 
 class sale_order(models.Model):
     _inherit = "sale.order"
@@ -47,7 +47,7 @@ class sale_order(models.Model):
         for c in self.env['account.tax'].compute_all(shipment_taxes, shipment_charge, 1)['taxes']:
             val += c.get('amount', 0.0)
         return val
-    
+
     def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
         cur_obj = self.pool.get('res.currency')
         res = super(sale_order, self)._amount_all(cr, uid, ids, field_name, arg, context=context)
@@ -61,7 +61,7 @@ class sale_order(models.Model):
             elif order.shipcharge:
                 res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] + order.shipcharge
         return res
-    
+
     @api.multi
     def _amount_all(self, field_name, arg):
         ret_val = super(sale_order, self)._amount_all(field_name, arg)
@@ -75,11 +75,10 @@ class sale_order(models.Model):
             elif order.shipcharge:
                 ret_val[order.id]['amount_total'] = ret_val[order.id]['amount_untaxed'] + ret_val[order.id]['amount_tax'] + order.shipcharge
         return ret_val
-    
-    shipcharge =        fields.Float(string='Shipping Cost', readonly=True)
-    ship_method =       fields.Char(string='Ship Method', size=128, readonly=True)
-    ship_method_id =    fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
-    sale_account_id =   fields.Many2one('account.account', string='Shipping Account',
+    shipcharge = fields.Float(string='Shipping Cost', readonly=True)
+    ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
+    ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
+    sale_account_id = fields.Many2one('account.account', string='Shipping Account',
                                        help='This account represents the g/l account for booking shipping income.')
 
 

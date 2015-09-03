@@ -2,28 +2,28 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2015 Serpent Consulting Services PVT. LTD. (<http://www.serpentcs.com>) 
-#    Copyright (C) 2011 NovaPoint Group LLC (<http://www.novapointgroup.com>)
-#    Copyright (C) 2004-2010 OpenERP SA (<http://www.openerp.com>)
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from openerp import models, fields, api
 import time
+from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
+
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
@@ -35,7 +35,7 @@ class account_invoice(models.Model):
         result = 0.0
         for line in self.invoice_line:
             if line.product_id:
-                result+= line.weight_net or 0.0
+                result += line.weight_net or 0.0
         self.total_weight_net = result
 
     @api.multi
@@ -52,7 +52,7 @@ class account_invoice(models.Model):
             if invoice.shipcharge:
                 res[invoice.id]['amount_total'] = res[invoice.id]['amount_untaxed'] + res[invoice.id]['amount_tax'] + invoice.shipcharge
         return res
-    
+
     @api.model
     def _get_invoice_from_line(self):
         invoice = self.env['account.invoice']
@@ -71,12 +71,13 @@ class account_invoice(models.Model):
             The (possibly updated) final move_lines to create for this invoice
         """
         move_lines = super(account_invoice, self).finalize_invoice_move_lines(move_lines)
+
         for rec in self:
             if rec.type == "out_refund":
                 account = rec.account_id.id
             else:
                 account = rec.sale_account_id.id
-            if rec.type in ('out_invoice','out_refund')  and account and rec.shipcharge:
+            if rec.type in ('out_invoice', 'out_refund') and account and rec.shipcharge:
                 lines1 = {
                     'analytic_account_id': False,
                     'tax_code_id': False,
@@ -126,14 +127,12 @@ class account_invoice(models.Model):
                     }
                     move_lines.append((0, 0, lines2))
         return move_lines
-    
-
-    total_weight_net =  fields.Float(compute='_total_weight_net', string='Total Net Weight', store=True,
+    total_weight_net = fields.Float(compute='_total_weight_net', string='Total Net Weight', store=True,
                                      help="The cumulated net weight of all the invoice lines.")
-    shipcharge =        fields.Float(string='Shipping Cost', readonly=True)
-    ship_method =       fields.Char(string='Ship Method', size=128, readonly=True)
-    ship_method_id =    fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
-    sale_account_id =   fields.Many2one('account.account', string='Shipping Account', readonly=True,
+    shipcharge = fields.Float(string='Shipping Cost', readonly=True)
+    ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
+    ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
+    sale_account_id = fields.Many2one('account.account', string='Shipping Account', readonly=True,
                                           help='This account represents the g/l account for booking shipping income.')
 
 
@@ -147,12 +146,9 @@ class invoice_line(models.Model):
         """Compute the net weight of the given Invoice Lines."""
         result = 0.0
         for line in self.product_id:
-            result+= line.weight_net * line.qty_available
-        self.weight_net= result
-    
-    
+            result += line.weight_net * line.qty_available
+        self.weight_net = result
     weight_net = fields.Float(compute='_weight_net', string='Net Weight', help="The net weight in Kg.", store=True)
-
 
 
 class account_invoice_tax_inherit(models.Model):
@@ -160,7 +156,7 @@ class account_invoice_tax_inherit(models.Model):
 
     @api.multi
     def compute(self, invoice_id):
-        context=self._context
+        context = self._context
         tax_grouped = super(account_invoice_tax_inherit, self).compute(invoice_id)
         tax_obj = self.env['account.tax']
         cur_obj = self.env['res.currency']
@@ -179,7 +175,7 @@ class account_invoice_tax_inherit(models.Model):
                     'sequence': tax['sequence'],
                     'base': tax['price_unit'] * 1
                     })
-                if inv.type in ('out_invoice','in_invoice'):
+                if inv.type in ('out_invoice', 'in_invoice'):
                     val.update({
                         'base_code_id': tax['base_code_id'],
                         'tax_code_id': tax['tax_code_id'],
@@ -199,8 +195,8 @@ class account_invoice_tax_inherit(models.Model):
                                                       context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False),
                         'account_id': tax['account_paid_id'] or line.account_id.id
                         })
-
                 key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
+
                 if not key in tax_grouped:
                     tax_grouped[key] = val
                 else:

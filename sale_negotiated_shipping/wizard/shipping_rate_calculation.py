@@ -2,42 +2,41 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2015 Serpent Consulting Services PVT. LTD. (<http://www.serpentcs.com>) 
-#    Copyright (C) 2011 NovaPoint Group LLC (<http://www.novapointgroup.com>)
-#    Copyright (C) 2004-2010 OpenERP SA (<http://www.openerp.com>)
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
 from openerp import models, fields, api
 
+
 class shipping_rate_wizard(models.TransientModel):
     _name = "shipping.rate.wizard"
     _description = "Calculates shipping charges"
-                
     shipping_cost = fields.Float(string='Shipping Cost')
-    account_id =    fields.Many2one('account.account', string='Account')
-    rate_select =   fields.Many2one('shipping.rate.config', string='Shipping Method')
+    account_id = fields.Many2one('account.account', string='Account')
+    rate_select = fields.Many2one('shipping.rate.config', string='Shipping Method')
 
     @api.model
     def update_shipping_cost(self):
         """
         Function to update sale order and invoice with new shipping cost and method
         """
-        ids=self._ids
-        context=self._context
+        ids = self._ids
+        context = self._context
         datas = self.browse(ids)
         if context is None:
             context = {}
@@ -61,14 +60,14 @@ class shipping_rate_wizard(models.TransientModel):
     @api.multi
     def onchange_shipping_method(self, rate_config_id):
         ret = {}
-        ids=self._ids
-        context=self._context
+        ids = self._ids
+        context = self._context
         if context is None:
             context = {}
         rate_config_obj = self.env['shipping.rate.config']
         rate_obj = self.env['shipping.rate']
         if context.get('active_model', False) in ['sale.order', 'account.invoice'] and 'active_id' in context:
-            cost = 0.0 
+            cost = 0.0
             rate_config = rate_config_obj.browse(rate_config_id)
             account_id = rate_config.account_id and rate_config.account_id.id or False
             model = context['active_model']

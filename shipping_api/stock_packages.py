@@ -1,34 +1,34 @@
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2015 Serpent Consulting Services PVT. LTD. (<http://www.serpentcs.com>) 
-#    Copyright (C) 2011 NovaPoint Group LLC (<http://www.novapointgroup.com>)
-#    Copyright (C) 2004-2010 OpenERP SA (<http://www.openerp.com>)
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
 from openerp import models, fields, api
 
+
 class shipping_package_type(models.Model):
     _name = 'shipping.package.type'
-    
-    name =   fields.Char(string='Package Type', size=32, required=True)
-    code =   fields.Char(string='Code', size=16)
+    name = fields.Char(string='Package Type', size=32, required=True)
+    code = fields.Char(string='Code', size=16)
     length = fields.Float(string='Length', help='Indicates the longest length of the box in inches.')
-    width =  fields.Float(string='Width')
+    width = fields.Float(string='Width')
     height = fields.Float(string='Height')
 
 
@@ -52,15 +52,17 @@ class stock_packages(models.Model):
         for line in self.stock_move_ids:
             sum_amount += line.cost or 0.0
         self.decl_val = sum_amount
-    
-    packge_no =     fields.Char(string='Package Number', size=64, help='The number of the package associated with the delivery.\
+    packge_no = fields.Char(string='Package Number', size=64, help='The number of the package associated with the delivery.\
                                 Example: 3 packages may be associated with a delivery.')
-    weight =        fields.Float(string='Weight (lbs)', required=1, default=0.0, help='The weight of the individual package')
-    package_type =  fields.Many2one('shipping.package.type', string='Package Type', help='Indicates the type of package')
-    length =        fields.Float(string='Length', help='Indicates the longest length of the box in inches.')
-    width =         fields.Float(string='Width', help='Indicates the width of the package in inches.')
-    height =        fields.Float(string='Height', help='Indicates the height of the package inches.')
-    ref1 =          fields.Selection([
+    weight = fields.Float(string='Weight (lbs)', required=1, default=0.0, help='The weight of the individual package')
+    package_type = fields.Many2one('shipping.package.type',
+                                   string='Package Type',
+                                   help='Indicates the type of package')
+    length = fields.Float(string='Length', help='Indicates the longest length of the box in inches.')
+    width = fields.Float(string='Width',
+                         help='Indicates the width of the package in inches.')
+    height = fields.Float(string='Height', help='Indicates the height of the package inches.')
+    ref1 = fields.Selection([
                             ('AJ', 'Accounts Receivable Customer Account'),
                             ('AT', 'Appropriation Number'),
                             ('BM', 'Bill of Lading Number'),
@@ -84,7 +86,8 @@ class stock_packages(models.Model):
                             ('TJ', 'Federal Taxpayer ID No.'),
                             ('SY', 'Social Security Number'),
                             ], string='Reference Number 1', help='Indicates the type of 1st reference no')
-    ref2 =      fields.Char(string='Reference Number 1', size=64, help='A reference number 1 associated with the package.')
+    ref2 = fields.Char(string='Reference Number 1', size=64,
+                       help='A reference number 1 associated with the package.')
     ref2_code = fields.Selection([
                         ('AJ', 'Accounts Receivable Customer Account'),
                         ('AT', 'Appropriation Number'),
@@ -109,21 +112,28 @@ class stock_packages(models.Model):
                         ('TJ', 'Federal Taxpayer ID No.'),
                         ('SY', 'Social Security Number'),
                         ], string='Reference Number', help='Indicates the type of 2nd reference no')
-    ref2_number =           fields.Char(string='Reference Number 2', size=64, help='A reference number 2 associated with the package.')
-    pick_id =               fields.Many2one('stock.picking', string='Delivery Order')
-    ship_move_id =          fields.Many2one('shipping.move', string='Delivery Order')
-    description =           fields.Text(string='Description')
-    logo =                  fields.Binary(string='Logo')
-    negotiated_rates =      fields.Float(string='NegotiatedRates')
-    shipment_identific_no = fields.Char(string='ShipmentIdentificationNumber', size=64)
-    tracking_no =           fields.Char(string='TrackingNumber', size=64)
-    ship_message =          fields.Text(string='Status Message')
-    tracking_url =          fields.Char(string='Tracking URL', size=512)
-    package_type_id =       fields.Many2one('logistic.company.package.type', string='Package Type')
-    show_button =           fields.Boolean(compute='_button_visibility', store=True, string='Show')
-#    package_item_ids =      fields.One2many('shipment.package.item','package_id', string='Package Items')
-    stock_move_ids =        fields.One2many('stock.move','package_id', string='Package Items')
-    decl_val =              fields.Float(compute='_get_decl_val', string='Declared Value', store=True, help='The declared value of the package.')
+    ref2_number = fields.Char(string='Reference Number 2', size=64, help='A reference number 2 associated with the package.')
+    pick_id = fields.Many2one('stock.picking', string='Delivery Order')
+    ship_move_id = fields.Many2one('shipping.move', string='Delivery Order')
+    description = fields.Text(string='Description')
+    logo = fields.Binary(string='Logo')
+    negotiated_rates = fields.Float(string='NegotiatedRates')
+    shipment_identific_no = fields.Char(string='ShipmentIdentificationNumber',
+                                        size=64)
+    tracking_no = fields.Char(string='TrackingNumber', size=64)
+    ship_message = fields.Text(string='Status Message')
+    tracking_url = fields.Char(string='Tracking URL', size=512)
+    package_type_id = fields.Many2one('logistic.company.package.type',
+                                      string='Package Type')
+    show_button = fields.Boolean(compute='_button_visibility', store=True,
+                                 string='Show')
+    # package_item_ids = fields.One2many('shipment.package.item','package_id',
+    # string='Package Items')
+    stock_move_ids = fields.One2many('stock.move', 'package_id',
+                                     string='Package Items')
+    decl_val = fields.Float(compute='_get_decl_val', string='Declared Value',
+                            store=True,
+                            help='The declared value of the package.')
 
     @api.model
     def default_get(self, fields):
@@ -136,10 +146,10 @@ class stock_packages(models.Model):
                     new_list.append((4, el))
                 ret_val['stock_move_ids'] = new_list
         return ret_val
-    
+
     @api.multi
     def print_label(self):
-        ids=self._ids
+        ids = self._ids
         if not ids: return []
         return {
             'type': 'ir.actions.report.xml',
@@ -155,7 +165,7 @@ class stock_packages(models.Model):
 
     @api.multi
     def print_packing_slips(self):
-        ids=self._ids
+        ids = self._ids
         print '------------print_packing_slips in stock packages'
         if not ids: return []
         return {

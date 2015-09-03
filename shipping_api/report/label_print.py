@@ -3,6 +3,7 @@
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,9 +20,10 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
 import time
+from openerp.osv import osv
 from openerp.report import report_sxw
+
 
 class report_print_label(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -32,25 +34,26 @@ class report_print_label(report_sxw.rml_parse):
             'time': time,
         })
 
+
 class report_label_print_stock_packages(osv.AbstractModel):
     _name = 'report.shipping_api.report_label_print_stock_packages'
     _inherit = 'report.abstract_report'
     _template = 'shipping_api.report_label_print_stock_packages'
     _wrapped_report_class = report_print_label
 #
-#class report_label_print_shipping_move(osv.AbstractModel):
+# class report_label_print_shipping_move(osv.AbstractModel):
 #    _name = 'report.shipping_api.report_label_print_shipping_move'
 #    _inherit = 'report.abstract_report'
 #    _template = 'shipping_api.report_label_print_shipping_move'
 #    _wrapped_report_class = report_print_label
 #
-#class report_label_print_quick_ship(osv.AbstractModel):
+# lass report_label_print_quick_ship(osv.AbstractModel):
 #    _name = 'report.shipping_api.report_label_print_quick_ship'
 #    _inherit = 'report.abstract_report'
 #    _template = 'shipping_api.report_label_print_quick_ship'
 #    _wrapped_report_class = report_print_label
 #
-#class report_label_print_stock_picking(osv.AbstractModel):
+# class report_label_print_stock_picking(osv.AbstractModel):
 #    _name = 'report.shipping_api.report_label_print_stock_picking'
 #    _inherit = 'report.abstract_report'
 #    _template = 'shipping_api.report_label_print_stock_picking'

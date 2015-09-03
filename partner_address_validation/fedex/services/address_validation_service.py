@@ -1,13 +1,36 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 """
 Address Validation Service Module
 =================================
-This package contains the shipping methods defined by Fedex's 
-AddressValidationService WSDL file. Each is encapsulated in a class for 
-easy access. For more details on each, refer to the respective class's 
+This package contains the shipping methods defined by Fedex's
+AddressValidationService WSDL file. Each is encapsulated in a class for
+easy access. For more details on each, refer to the respective class's
 documentation.
 """
 from datetime import datetime
 from .. base_service import FedexBaseService
+
 
 class FedexAddressValidationRequest(FedexBaseService):
     """
@@ -15,23 +38,22 @@ class FedexAddressValidationRequest(FedexBaseService):
     in one go. Create AddressToValidate WSDL objects and add them to each
     instance of this request using add_address().
     """
+
     def __init__(self, config_obj, *args, **kwargs):
         """
         @type config_obj: L{FedexConfig}
         @param config_obj: A valid FedexConfig object.
         """
         self._config_obj = config_obj
-
         # Holds version info for the VersionId SOAP object.
-        self._version_info = {'service_id': 'aval', 'major': '2', 
-                             'intermediate': '0', 'minor': '0'}
-
+        self._version_info = {'service_id': 'aval', 'major': '2',
+                              'intermediate': '0', 'minor': '0'}
         self.AddressValidationOptions = None
         """@ivar: Holds the AddressValidationOptions WSDL object."""
         self.addresses_to_validate = []
         """@ivar: Holds the AddressToValidate WSDL object."""
         # Call the parent FedexBaseService class for basic setup work.
-        super(FedexAddressValidationRequest, self).__init__(self._config_obj, 
+        super(FedexAddressValidationRequest, self).__init__(self._config_obj,
                                                          'AddressValidationService_v2.wsdl',
                                                          *args, **kwargs)
 
@@ -41,7 +63,6 @@ class FedexAddressValidationRequest(FedexBaseService):
         """
         # This holds some optional options for the request..
         self.AddressValidationOptions = self.client.factory.create('AddressValidationOptions')
-                               
         # This is good to review if you'd like to see what the data structure
         # looks like.
         self.logger.debug(self.AddressValidationOptions)
@@ -49,7 +70,6 @@ class FedexAddressValidationRequest(FedexBaseService):
     def _assemble_and_send_request(self):
         """
         Fires off the Fedex request.
-        
         @warning: NEVER CALL THIS METHOD DIRECTLY. CALL send_request(),
             WHICH RESIDES ON FedexBaseService AND IS INHERITED.
         """
@@ -62,7 +82,7 @@ class FedexAddressValidationRequest(FedexBaseService):
         self.logger.debug(self.TransactionDetail)
         self.logger.debug(self.VersionId)
         # Fire off the query.
-        response = self.client.service.addressValidation(WebAuthenticationDetail=self.WebAuthenticationDetail,
+        response = self.client.service.addressValidation(WebAuthenticationDetail = self.WebAuthenticationDetail,
                                         ClientDetail=self.ClientDetail,
                                         TransactionDetail=self.TransactionDetail,
                                         Version=self.VersionId,
@@ -74,7 +94,6 @@ class FedexAddressValidationRequest(FedexBaseService):
     def add_address(self, address_item):
         """
         Adds an address to self.addresses_to_validate.
-        
         @type address_item: WSDL object, type of AddressToValidate WSDL object.
         @keyword address_item: A AddressToValidate, created by
             calling create_wsdl_object_of_type('AddressToValidate') on

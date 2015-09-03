@@ -1,12 +1,35 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 """
 Ship Service Module
 ===================
-This package contains the shipping methods defined by Fedex's 
-ShipService WSDL file. Each is encapsulated in a class for easy access. 
+This package contains the shipping methods defined by Fedex's
+ShipService WSDL file. Each is encapsulated in a class for easy access.
 For more details on each, refer to the respective class's documentation.
 """
 from datetime import datetime
 from .. base_service import FedexBaseService
+
 
 class FedexProcessShipmentRequest(FedexBaseService):
     """
@@ -15,26 +38,24 @@ class FedexProcessShipmentRequest(FedexBaseService):
     send the request. Label printing is supported and very configurable,
     returning an ASCII representation with the response as well.
     """
+
     def __init__(self, config_obj, *args, **kwargs):
         """
-        The optional keyword args detailed on L{FedexBaseService} 
+        The optional keyword args detailed on L{FedexBaseService}
         apply here as well.
-
         @type config_obj: L{FedexConfig}
         @param config_obj: A valid FedexConfig object.
         """
         self._config_obj = config_obj
-
         # Holds version info for the VersionId SOAP object.
-        self._version_info = {'service_id': 'ship', 'major': '7', 
-                             'intermediate': '0', 'minor': '0'}
-
+        self._version_info = {'service_id': 'ship', 'major': '7',
+                              'intermediate': '0', 'minor': '0'}
         self.RequestedShipment = None
         """@ivar: Holds the RequestedShipment WSDL object."""
         # Call the parent FedexBaseService class for basic setup work.
-        super(FedexProcessShipmentRequest, self).__init__(self._config_obj, 
-                                                         'ShipService_v7.wsdl',
-                                                         *args, **kwargs)
+        super(FedexProcessShipmentRequest, self).__init__(self._config_obj,
+                                                          'ShipService_v7.wsdl',
+                                                          *args, **kwargs)
 
     def _prepare_wsdl_objects(self):
         """
@@ -44,7 +65,6 @@ class FedexProcessShipmentRequest(FedexBaseService):
         # This is the primary data structure for processShipment requests.
         self.RequestedShipment = self.client.factory.create('RequestedShipment')
         self.RequestedShipment.ShipTimestamp = datetime.now()
-
         TotalWeight = self.client.factory.create('Weight')
         # Start at nothing.
         TotalWeight.Value = 0.0
@@ -53,7 +73,6 @@ class FedexProcessShipmentRequest(FedexBaseService):
         # This is the total weight of the entire shipment. Shipments may
         # contain more than one package.
         self.RequestedShipment.TotalWeight = TotalWeight
-
         # This is the top level data structure for Shipper information.
         ShipperParty = self.client.factory.create('Party')
         ShipperParty.Address = self.client.factory.create('Address')
@@ -61,7 +80,6 @@ class FedexProcessShipmentRequest(FedexBaseService):
 
         # Link the ShipperParty to our master data structure.
         self.RequestedShipment.Shipper = ShipperParty
-
         # This is the top level data structure for Recipient information.
         RecipientParty = self.client.factory.create('Party')
         RecipientParty.Contact = self.client.factory.create('Contact')
@@ -75,19 +93,15 @@ class FedexProcessShipmentRequest(FedexBaseService):
         Payor.AccountNumber = self._config_obj.account_number
         # Assume US.
         Payor.CountryCode = 'US'
-
         ShippingChargesPayment = self.client.factory.create('Payment')
         ShippingChargesPayment.Payor = Payor
-
         self.RequestedShipment.ShippingChargesPayment = ShippingChargesPayment
         self.RequestedShipment.LabelSpecification = self.client.factory.create('LabelSpecification')
         # ACCOUNT or LIST
-        self.RequestedShipment.RateRequestTypes = ['ACCOUNT'] 
-
+        self.RequestedShipment.RateRequestTypes = ['ACCOUNT']
         # Start with no packages, user must add them.
         self.RequestedShipment.PackageCount = 0
         self.RequestedShipment.RequestedPackageLineItems = []
-
         # This is good to review if you'd like to see what the data structure
         # looks like.
         self.logger.debug(self.RequestedShipment)
@@ -104,9 +118,8 @@ class FedexProcessShipmentRequest(FedexBaseService):
     def _assemble_and_send_validation_request(self):
         """
         Fires off the Fedex shipment validation request.
-        
-        @warning: NEVER CALL THIS METHOD DIRECTLY. CALL 
-            send_validation_request(), WHICH RESIDES ON FedexBaseService 
+        @warning: NEVER CALL THIS METHOD DIRECTLY. CALL
+            send_validation_request(), WHICH RESIDES ON FedexBaseService
             AND IS INHERITED.
         """
         # Fire off the query.
@@ -120,8 +133,7 @@ class FedexProcessShipmentRequest(FedexBaseService):
     def _assemble_and_send_request(self):
         """
         Fires off the Fedex request.
-
-        @warning: NEVER CALL THIS METHOD DIRECTLY. CALL send_request(), 
+        @warning: NEVER CALL THIS METHOD DIRECTLY. CALL send_request(),
             WHICH RESIDES ON FedexBaseService AND IS INHERITED.
         """
         # Fire off the query.
@@ -135,8 +147,7 @@ class FedexProcessShipmentRequest(FedexBaseService):
     def add_package(self, package_item):
         """
         Adds a package to the ship request.
-        
-        @type package_item: WSDL object, type of RequestedPackageLineItem 
+        @type package_item: WSDL object, type of RequestedPackageLineItem
             WSDL object.
         @keyword package_item: A RequestedPackageLineItem, created by
             calling create_wsdl_object_of_type('RequestedPackageLineItem') on
@@ -148,25 +159,26 @@ class FedexProcessShipmentRequest(FedexBaseService):
         self.RequestedShipment.TotalWeight.Value += package_weight
         self.RequestedShipment.PackageCount += 1
 
+
 class FedexDeleteShipmentRequest(FedexBaseService):
     """
     This class allows you to delete a shipment, given a tracking number.
     """
+
     def __init__(self, config_obj, *args, **kwargs):
         """
         Deletes a shipment via a tracking number.
         """
         self._config_obj = config_obj
-
         # Holds version info for the VersionId SOAP object.
-        self._version_info = {'service_id': 'ship', 'major': '7', 
-                             'intermediate': '0', 'minor': '0'}
+        self._version_info = {'service_id': 'ship', 'major': '7',
+                              'intermediate': '0', 'minor': '0'}
         self.DeletionControlType = None
         """@ivar: Holds the DeletrionControlType WSDL object."""
         self.TrackingId = None
         """@ivar: Holds the TrackingId WSDL object."""
         # Call the parent FedexBaseService class for basic setup work.
-        super(FedexDeleteShipmentRequest, self).__init__(self._config_obj, 
+        super(FedexDeleteShipmentRequest, self).__init__(self._config_obj,
                                                 'ShipService_v7.wsdl',
                                                 *args, **kwargs)
 
@@ -181,7 +193,6 @@ class FedexDeleteShipmentRequest(FedexBaseService):
     def _assemble_and_send_request(self):
         """
         Fires off the Fedex request.
-        
         @warning: NEVER CALL THIS METHOD DIRECTLY. CALL send_request(), WHICH RESIDES
             ON FedexBaseService AND IS INHERITED.
         """
