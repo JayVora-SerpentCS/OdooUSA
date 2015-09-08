@@ -114,16 +114,19 @@ class partner_addr_validate(models.TransientModel):
 
     @api.multi
     def onchange_update(self, default_addr_id):
-        ret = {}
-        if default_addr_id:
-            address_item = self.env['res.partner'].browse(default_addr_id)
-            if address_item.address_validation_method is 'none':
-                return {'value': ret}
-            inv_return_data = self.env[address_item.address_validation_method].address_validation(default_addr_id)
-            ret['error_msg'] = inv_return_data['error_msg']
-            ret['address_list'] = inv_return_data['address_list']
-            ret['address_id'] = default_addr_id
-        return {'value': ret}
+        try:
+            ret = {}
+            if default_addr_id:
+                address_item = self.env['res.partner'].browse(default_addr_id)
+                if address_item.address_validation_method is 'none':
+                    return {'value': ret}
+                inv_return_data = self.env[address_item.address_validation_method].address_validation(default_addr_id)
+                ret['error_msg'] = inv_return_data['error_msg']
+                ret['address_list'] = inv_return_data['address_list']
+                ret['address_id'] = default_addr_id
+            return {'value': ret}
+        except (Exception):
+            raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account"))
     error_msg = fields.Text(string='Error Message')
     address_list = fields.One2many('response.data.model', 'so_validate', string='Address List')
     address_id = fields.Many2one('res.partner', string='Address')

@@ -42,11 +42,12 @@ class stock_picking(models.Model):
 
     @api.multi
     def distribute_weight(self):
+        package_obj = self.env['stock.packages'].search([])
         pack_ids_list = self.read(['packages_ids', 'tot_del_order_weight'])
         for pack_ids in pack_ids_list:
             if pack_ids['tot_del_order_weight'] and pack_ids['packages_ids']:
                 avg_weight = pack_ids['tot_del_order_weight'] / len(pack_ids['packages_ids'])
-                self.env['stock.packages'].write({'weight': avg_weight})
+                package_obj.write({'weight': avg_weight})
         return True
 
     @api.one
@@ -279,19 +280,19 @@ class stock_move(models.Model):
                                  help='Indicates the package')
     cost = fields.Float(string='Value', digits_compute=dp.get_precision('Account'))
 
-    @api.multi
-    def onchange_quantity(self, product_id, product_qty, product_uom, product_uos, location_id, sale_line_id):
-        result = super(stock_move, self).onchange_quantity(product_id, product_qty, product_uom, product_uos)
+    @api.v7
+    def onchange_quantity(self, cr, uid, ids, product_id, product_uom_qty, product_uom, product_uos, sale_line_id = False):
+        result = super(stock_move, self).onchange_quantity(cr, uid, ids,product_id, product_uom_qty, product_uom, product_uos)
         if product_id:
-            product = self.env['product.product'].browse(product_id)
+            product = self.pool.get('product.product').browse(cr,uid,product_id)
             if sale_line_id:
-                sale_unit_price = self.env['sale.order.line'].browse(sale_line_id).price_unit
-                price = sale_unit_price * product_qty
+                sale_unit_price = self.pool.get('sale.order.line').browse(cr,uid,sale_line_id).price_unit
+                price = sale_unit_price * product_uom_qty
             else:
-                price = product.list_price * product_qty
+                price = product.list_price * product_uom_qty
             result['value'].update({'cost': price})
+#         return result
         return result
-
 
 class Prod(models.Model):
     _inherit = 'product.product'

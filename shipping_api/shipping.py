@@ -82,7 +82,7 @@ class shipping_move(models.Model):
             self.env['stock.picking'].write({'ship_state': vals['state']})
         return res
 
-    @api.multi
+    @api.model
     def create(self, vals):
         move_id = super(shipping_move, self).create(vals)
         if 'state' in vals:

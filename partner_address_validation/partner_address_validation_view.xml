@@ -37,7 +37,7 @@
 					<group colspan="2" col="3">
 						<label string="Address Validation Method : " align="1.0" />
 						<field name="address_validation_method" nolabel="1" />
-						<button name="%(so_addr_validate_act_window)d" type="action"
+						<button name="addr_validate_act_window" type="object"
 							string="Validate _Address"
 							groups="base.group_sale_salesman,base.group_erp_manager,base.group_sale_manager,base.group_system"  
 							context="{'default_sale_id': active_id}"

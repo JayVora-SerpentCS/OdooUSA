@@ -28,7 +28,7 @@ class sale_order(models.Model):
 
     @api.model
     def _get_company_code(self):
-        return []
+        return [('fedex', 'FeDex')]
 
     @api.multi
     def onchange_logis_company(self, logistic_company_id):
@@ -41,7 +41,7 @@ class sale_order(models.Model):
             res = {'values': {}}
         return res
 
-    @api.model
+    @api.multi
     def _get_logis_company(self):
         context=self._context
 
@@ -59,7 +59,7 @@ class sale_order(models.Model):
     logis_company = fields.Many2one('logistic.company', string='Logistic Company',
     # default=_get_logis_company, 
                                         help='Name of the Logistics company providing the shipper services.')
-    ship_company_code = fields.Selection('_get_company_code', string='Ship Company')
+    ship_company_code = fields.Selection(_get_company_code, string='Ship Company')
     rate_selection = fields.Selection([('rate_card', 'Rate Card'), ('rate_request', 'Rate Request')], string='Ship Rate Method')
     partner_order_id = fields.Many2one('res.partner', string='Ordering Contact', 
 #                         default= lambda self : self._context.get('partner_id', False) and self.env['res.partner'].address_get(['partner_id'], ['order_contact'])['order_contact'],

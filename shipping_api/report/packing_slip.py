@@ -38,7 +38,6 @@ class report_packing_slip(report_sxw.rml_parse):
         })
 
     def _get_package_lines(self, package):
-        print '----get pac line', package, package.stock_move_ids
         lines = []
         line_items = {}
         done_product_ids = []
@@ -82,7 +81,6 @@ class report_packing_slip(report_sxw.rml_parse):
 
     def _get_total(self, sale, package):
         qty = {}
-        print '---sale', sale, package
         product_ids = []
         total = 0.00
         for item in package.stock_move_ids:

@@ -40,6 +40,7 @@ class fedex_account(models.Model):
         status = 0
         error_msg = ''
         fedex_accounts = self.env['fedex.account'].search([])
+
         if not fedex_accounts:
             warning = {
                 'title': "No FedEx account!",

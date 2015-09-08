@@ -19,9 +19,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-from openerp import models, fields, api, _
 import time
+from openerp.exceptions import Warning
+from openerp import models, fields, api, _
 # import pdb
 
 
@@ -33,7 +33,7 @@ class so_addr_validate(models.TransientModel):
     _description = "Sale order Address Validate"
     _rec_name = 'inv_error_msg'
 
-    @api.model
+    @api.multi
     def clean_memory(self):
         resp_env = self.env['response.data.model']
         resp_ids = resp_env.search([])
@@ -95,6 +95,7 @@ class so_addr_validate(models.TransientModel):
 
     @api.multi
     def onchange_update(self, sale_id):
+        try:
             ret = {}
             if sale_id:
                 sale_obj=self.env['sale.order'].browse(sale_id)
@@ -104,15 +105,16 @@ class so_addr_validate(models.TransientModel):
                 ord_addr_id = res['partner_id']
                 ship_addr_id = res['partner_shipping_id'][0]
                 validation_method = res['address_validation_method']
+
                 inv_return_data = self.env[validation_method].address_validation(inv_addr_id)
-                print '-----', inv_return_data
-                
                 if inv_return_data['address_list']:
                     inv_return_data['address_list'][0]['select']=True
-                ret['inv_error_msg'] = inv_return_data['error_msg']
+                
+#                ret['inv_error_msg'] = inv_return_data['error_msg']
+
                 if inv_return_data['address_list']:
                     ret['inv_address_list'] = inv_return_data['address_list']
-               
+
                 if inv_addr_id == ord_addr_id:
                     ord_return_data = inv_return_data
                
@@ -127,11 +129,12 @@ class so_addr_validate(models.TransientModel):
                 ret['ship_error_msg'] = ship_return_data['error_msg']
                 if ship_return_data['address_list']:
                     ret['ship_address_list'] = ship_return_data['address_list']
-
                 ret['inv_address_id'] = inv_addr_id
                 ret['ord_address_id'] = ord_addr_id
                 ret['ship_address_id'] = ship_addr_id
             return {'value':ret}
+        except (Exception):
+            raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account"))
 
 
     update_field =      fields.Boolean(string='Update')

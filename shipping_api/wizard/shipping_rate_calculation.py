@@ -77,7 +77,7 @@ class shipping_rate_wizard(models.TransientModel):
                     })
         return res
 
-    @api.model
+    @api.multi
     def update_shipping_cost(self):
         data = self.browse(self._ids)
         context = self._context

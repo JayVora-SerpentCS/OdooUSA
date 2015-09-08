@@ -166,7 +166,6 @@ class stock_packages(models.Model):
     @api.multi
     def print_packing_slips(self):
         ids = self._ids
-        print '------------print_packing_slips in stock packages'
         if not ids: return []
         return {
             'type': 'ir.actions.report.xml',

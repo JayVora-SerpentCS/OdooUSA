@@ -20,7 +20,9 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
+from openerp.osv import fields as oldFields
+from openerp.exceptions import Warning
 import openerp.addons.decimal_precision as dp
 
 
@@ -47,6 +49,11 @@ class sale_order(models.Model):
         for c in self.env['account.tax'].compute_all(shipment_taxes, shipment_charge, 1)['taxes']:
             val += c.get('amount', 0.0)
         return val
+    
+    @api.v7
+    def _amount_all_wrapper(self, cr, uid, ids, field_name, arg, context=None):
+        """ Wrapper because of direct method passing as parameter for function fields """
+        return self._amount_all(cr, uid, ids, field_name, arg, context=context)
 
     def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
         cur_obj = self.pool.get('res.currency')
@@ -61,25 +68,43 @@ class sale_order(models.Model):
             elif order.shipcharge:
                 res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] + order.shipcharge
         return res
-
+    
+    @api.v7
+    def _get_order(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('sale.order.line').browse(cr, uid, ids, context=context):
+            result[line.order_id.id] = True
+        return result.keys()
     @api.multi
-    def _amount_all(self, field_name, arg):
-        ret_val = super(sale_order, self)._amount_all(field_name, arg)
-        for order in self.browse(self._ids):
-            cur = order.pricelist_id.currency_id
-            tax_ids = order.ship_method_id and order.ship_method_id.shipment_tax_ids
-            if tax_ids:
-                val = self._amount_shipment_tax(tax_ids, order.shipcharge)
-                ret_val[order.id]['amount_tax'] += cur.round(val)
-                ret_val[order.id]['amount_total'] = ret_val[order.id]['amount_untaxed'] + ret_val[order.id]['amount_tax'] + order.shipcharge
-            elif order.shipcharge:
-                ret_val[order.id]['amount_total'] = ret_val[order.id]['amount_untaxed'] + ret_val[order.id]['amount_tax'] + order.shipcharge
-        return ret_val
+    def view_for_shipping_rate_wizard(self):
+        if str(self.address_validation_method) == 'fedex.account':
+            ir_model_data = self.env['ir.model.data']
+            form_id = ir_model_data.get_object_reference('sale_negotiated_shipping', 'view_for_shipping_rate_wizard')[1]
+            return {
+                    'type': 'ir.actions.act_window',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'shipping.rate.wizard',
+                    'views': [(form_id, 'form')],
+                    'view_id': form_id,
+                    'target': 'new',
+                    }
+        else:
+            raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account"))
     shipcharge = fields.Float(string='Shipping Cost', readonly=True)
     ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
     ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
     sale_account_id = fields.Many2one('account.account', string='Shipping Account',
                                        help='This account represents the g/l account for booking shipping income.')
 
+    _columns = {
+        'amount_total': oldFields.function(_amount_all_wrapper, digits_compute=dp.get_precision('Account'), string='Total',
+            store={
+                'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line', 'shipcharge'], 10),
+                'sale.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
+            },
+            multi='sums', help="The total amount."),
+ 
+    }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

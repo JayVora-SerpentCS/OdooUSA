@@ -30,7 +30,7 @@ class shipping_rate_wizard(models.TransientModel):
     account_id = fields.Many2one('account.account', string='Account')
     rate_select = fields.Many2one('shipping.rate.config', string='Shipping Method')
 
-    @api.model
+    @api.multi
     def update_shipping_cost(self):
         """
         Function to update sale order and invoice with new shipping cost and method
@@ -42,20 +42,18 @@ class shipping_rate_wizard(models.TransientModel):
             context = {}
         if context.get('active_model', False) in ['sale.order', 'account.invoice'] and 'active_id' in context:
             model = context['active_model']
-            model_obj = self.env[model]
-            model_id = context.get('active_id', False)
-            if model_id:
-                model_obj.write({
-                    'shipcharge': datas.shipping_cost,
-                    'ship_method': datas.rate_select.shipmethodname,
-                    'sale_account_id': datas.account_id.id,
-                    'ship_method_id': datas.rate_select.id,
-                    })
+            model_obj = self.env['sale.order'].search([('address_validation_method','=','fedex.account'),('id','=',context.get('active_id'))])
+            model_obj.write({
+                'shipcharge': datas.shipping_cost,
+                'ship_method': datas.rate_select.shipmethodname,
+                'sale_account_id': datas.account_id.id,
+                'ship_method_id': datas.rate_select.id,
+                })
             if model == 'sale.order':
                 model_obj.button_dummy()
             if model == 'account.invoice':
                 model_obj.button_reset_taxes([model_id])
-            return {'nodestroy': False, 'type': 'ir.actions.act_window_close'}
+        return {'type': 'ir.actions.act_window_close'}
 
     @api.multi
     def onchange_shipping_method(self, rate_config_id):
