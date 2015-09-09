@@ -13,8 +13,7 @@
 						<newline/>
 						<field name="rate_select" on_change="onchange_shipping_method(rate_select,context)" 
 								widget="selection" colspan="1"/>
-						<field name="shipping_cost"/>
-						 <!-- attrs="{'invisible':[('rate_selection','=','rate_request')]} -->
+						<field name="shipping_cost" attrs="{'invisible':[('rate_selection','=','rate_request')]}"/>
 					</group>
 				    <footer>
 				        <button name="update_shipping_cost" string="OK" type="object" icon="gtk-ok"/>

@@ -31,6 +31,6 @@ class purchase_order(models.Model):
         res = self.env['stock.warehouse'].search([])
         return res and res.id or False
 
-    warehouse_id = fields.Char(compute='_get_warehouse', string='Warehouse')
+    warehouse_id = fields.Char(compute=_get_warehouse, string='Warehouse')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

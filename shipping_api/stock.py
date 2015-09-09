@@ -291,7 +291,6 @@ class stock_move(models.Model):
             else:
                 price = product.list_price * product_uom_qty
             result['value'].update({'cost': price})
-#         return result
         return result
 
 class Prod(models.Model):

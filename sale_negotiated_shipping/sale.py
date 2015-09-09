@@ -90,7 +90,7 @@ class sale_order(models.Model):
                     'target': 'new',
                     }
         else:
-            raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account"))
+            raise Warning(_("Please select Address Validation Method!"))
     shipcharge = fields.Float(string='Shipping Cost', readonly=True)
     ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
     ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)
