@@ -10,9 +10,7 @@
 				<xpath expr="//form/sheet/notebook/page/group[@name='sale_total']" position="replace">
 					<group col="6" colspan="4" name="sale_total">
 					<button name="button_dummy" states="draft" string="Compute" type="object" icon="gtk-execute" colspan="2"/>
-					<!-- <button name="%(action_view_for_shipping_rate_wizard)d" string="Calculate Shipping" icon="terp-sale" type="action"
-							help="Displays the shipping wizard." states="draft" colspan="2" /> -->
-					<button name="view_for_shipping_rate_wizard" string="Calculate Shipping" icon="terp-sale" type="object"
+					<button name="%(action_view_for_shipping_rate_wizard)d" string="Calculate Shipping" icon="terp-sale" type="action"
 							help="Displays the shipping wizard." states="draft" colspan="2" />
 					<group col="2" colspan="2">
 					    <field name="ship_method"/>

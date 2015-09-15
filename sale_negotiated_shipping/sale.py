@@ -43,10 +43,10 @@ class sale_order(models.Model):
                 inv_obj.button_reset_taxes([inv_id])
         return inv_id
 
-    @api.model
-    def _amount_shipment_tax(self, shipment_taxes, shipment_charge):
+    @api.v7
+    def _amount_shipment_tax(self,cr,uid,shipment_taxes, shipment_charge):
         val = 0.0
-        for c in self.env['account.tax'].compute_all(shipment_taxes, shipment_charge, 1)['taxes']:
+        for c in self.pool.get('account.tax').compute_all(cr,uid,shipment_taxes, shipment_charge, 1)['taxes']:
             val += c.get('amount', 0.0)
         return val
     
@@ -55,6 +55,7 @@ class sale_order(models.Model):
         """ Wrapper because of direct method passing as parameter for function fields """
         return self._amount_all(cr, uid, ids, field_name, arg, context=context)
 
+    @api.v7
     def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
         cur_obj = self.pool.get('res.currency')
         res = super(sale_order, self)._amount_all(cr, uid, ids, field_name, arg, context=context)
@@ -62,7 +63,7 @@ class sale_order(models.Model):
             cur = order.pricelist_id.currency_id
             tax_ids = order.ship_method_id and order.ship_method_id.shipment_tax_ids
             if tax_ids:
-                val = self._amount_shipment_tax(cr, uid, tax_ids, order.shipcharge)
+                val = self._amount_shipment_tax(cr,uid,tax_ids, order.shipcharge)
                 res[order.id]['amount_tax'] += cur_obj.round(cr, uid, cur, val)
                 res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] + order.shipcharge
             elif order.shipcharge:
@@ -75,22 +76,7 @@ class sale_order(models.Model):
         for line in self.pool.get('sale.order.line').browse(cr, uid, ids, context=context):
             result[line.order_id.id] = True
         return result.keys()
-    @api.multi
-    def view_for_shipping_rate_wizard(self):
-        if str(self.address_validation_method) == 'fedex.account':
-            ir_model_data = self.env['ir.model.data']
-            form_id = ir_model_data.get_object_reference('sale_negotiated_shipping', 'view_for_shipping_rate_wizard')[1]
-            return {
-                    'type': 'ir.actions.act_window',
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'res_model': 'shipping.rate.wizard',
-                    'views': [(form_id, 'form')],
-                    'view_id': form_id,
-                    'target': 'new',
-                    }
-        else:
-            raise Warning(_("Please select Address Validation Method!"))
+
     shipcharge = fields.Float(string='Shipping Cost', readonly=True)
     ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
     ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)

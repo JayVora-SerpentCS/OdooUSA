@@ -42,7 +42,8 @@ class shipping_rate_wizard(models.TransientModel):
             context = {}
         if context.get('active_model', False) in ['sale.order', 'account.invoice'] and 'active_id' in context:
             model = context['active_model']
-            model_obj = self.env['sale.order'].search([('address_validation_method','=','fedex.account'),('id','=',context.get('active_id'))])
+            model_id = context.get('active_id')
+            model_obj = self.env[model].search([('address_validation_method','=','fedex.account'),('id','=',model_id)])
             model_obj.write({
                 'shipcharge': datas.shipping_cost,
                 'ship_method': datas.rate_select.shipmethodname,
@@ -52,7 +53,7 @@ class shipping_rate_wizard(models.TransientModel):
             if model == 'sale.order':
                 model_obj.button_dummy()
             if model == 'account.invoice':
-                model_obj.button_reset_taxes([model_id])
+                model_obj.button_reset_taxes() # [model_id]
         return {'type': 'ir.actions.act_window_close'}
 
     @api.multi

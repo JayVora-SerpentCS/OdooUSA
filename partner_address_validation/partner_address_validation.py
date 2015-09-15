@@ -70,24 +70,6 @@ class sale_order(models.Model):
     '''
     Add address validation fields on sale order
     '''
-
-    @api.multi
-    def addr_validate_act_window(self):
-        if str(self.address_validation_method) == 'fedex.account':
-            ir_model_data = self.env['ir.model.data']
-            form_id = ir_model_data.get_object_reference('partner_address_validation', 'view_so_addrvalidate')[1]
-            return {
-                'type': 'ir.actions.act_window',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'res_model': 'so.addr_validate',
-                'views': [(form_id, 'form')],
-                'view_id': form_id,
-                'target': 'new',
-            }
-        else:
-            raise Warning(_('Please select a address validation method'))
-
     @api.model
     def _method_get(self):
         list = []
@@ -143,6 +125,7 @@ class sale_order(models.Model):
             context = {}
         user = self.env['res.users'].browse(ids)
         return user and user.company_id and user.company_id.address_validation_method
+
     hide_validate = fields.Boolean(compute=_validated, string='Hide Validate', store=False)
     address_validation_method = fields.Selection(_method_get, string='Address Validation Method',
                                                  default=_get_address_validation_method)

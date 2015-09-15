@@ -10,34 +10,29 @@
 				<form string="Address validation">
 				   <sheet>
 				    <notebook>
-					<page string="Invoice Address">
-					   <group>
-						<field name="sale_id" on_change="onchange_update(sale_id)"
-							invisible="1" />
-						<field name="inv_address_id" invisible="1" />
-						<field name="ord_address_id" invisible="1" />
-						<field name="ship_address_id" invisible="1" />
-						<newline />
-						<field name="inv_address_list" colspan="4" nolabel="1" width="600"
-							height="120" />
-						<field name="inv_error_msg" nolabel="1"/>
-					   </group>
-					</page>
-					<page string="Ordering Contact">
-					   <group>
-						<field name="ord_address_list" colspan="4" nolabel="1" width="600"
-							height="120" />
-						<field name="ord_error_msg" nolabel="1"/>
-					   </group>
-					</page>
-					<page string="Delivery Address">
-					   <group>
-						<field name="ship_address_list" colspan="4" nolabel="1"
-							width="600" height="120" />
-						<field name="ship_error_msg" nolabel="1"/>
-					   </group>
-					</page>
+						<page string="Invoice Address">
+						   <group>
+							<field name="sale_id" on_change="onchange_update(sale_id)"
+								invisible="1" />
+							<newline />
+							<field name="inv_address_list" colspan="4" nolabel="1" width="600"
+								height="120" />
+						   </group>
+						</page>
+						<page string="Ordering Contact">
+						   <group>
+							<field name="ord_address_list" colspan="4" nolabel="1" width="600"
+								height="120" />
+						   </group>
+						</page>
+						<page string="Delivery Address">
+						   <group>
+							<field name="ship_address_list" colspan="4" nolabel="1"
+								width="600" height="120" />
+						   </group>
+						</page>
 					</notebook>
+					<field name="ship_error_msg" nolabel="1"/>
 					<footer>
 					<button name="update_address" string="Update Address" type="object" icon="gtk-ok" />
 						

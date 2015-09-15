@@ -19,17 +19,3 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-from . import models
-import res_company
-import logistic_company
-import shipping
-import stock_packages
-import stock
-import email_template
-import report
-import sale
-import purchase
-import wizard
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

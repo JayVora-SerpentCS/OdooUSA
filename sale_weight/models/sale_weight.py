@@ -33,11 +33,12 @@ class sale_order(models.Model):
     def _total_weight_net(self):
         """Compute the total net weight of the given Sale Orders."""
         result = 0.0
+
         for line in self.order_line:
             if line.product_id:
                 result += line.weight_net or 0.0
         self.total_weight_net = result
-    total_weight_net = fields.Float(compute='_total_weight_net',
+    total_weight_net = fields.Float(compute=_total_weight_net,
                                     readonly=True, store=True,
                                     string='Total Weight',
                                     help="The cumulated net weight of all the order lines.")

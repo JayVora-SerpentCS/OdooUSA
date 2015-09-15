@@ -35,14 +35,21 @@
 						<field name="hide_validate" invisible="1"/>
 <!-- 						attrs="{'invisible':[('hide_validate','=',True)]}" -->
 					<group colspan="2" col="3">
-						<label string="Address Validation Method : " align="1.0" />
-						<field name="address_validation_method" nolabel="1" />
-						<button name="addr_validate_act_window" type="object"
+						<!-- <label string="Address Validation Method : "/> -->
+						<field name="address_validation_method"/>
+						<!-- <button name="addr_validate_act_window" type="object"
 							string="Validate _Address"
 							groups="base.group_sale_salesman,base.group_erp_manager,base.group_sale_manager,base.group_system"  
 							context="{'default_sale_id': active_id}"
-							attrs="{'invisible':[('address_validation_method','in',['none', False])]}"/>
+							attrs="{'invisible':[('address_validation_method','in',['none', False])]}"/> -->
 					</group>
+					<footer>
+						<button name='%(so_addr_validate_act_window)d' type='action' string='Validate Address' 
+								groups="base.group_sale_salesman,base.group_erp_manager,base.group_sale_manager,base.group_system"
+								context="{'default_sale_id': active_id}"
+								attrs="{'invisible':[('address_validation_method','in',['none', False])]}"
+								/>
+					</footer>
 				</xpath>
 			</field>
 		</record>

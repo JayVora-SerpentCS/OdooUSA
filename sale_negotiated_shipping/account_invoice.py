@@ -21,12 +21,59 @@
 ##############################################################################
 
 import time
-from openerp import models, fields, api
+from openerp import models, fields, api, _
+from openerp.exceptions import Warning
 import openerp.addons.decimal_precision as dp
 
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
+
+    @api.multi
+    def addr_validate_act_window(self):
+        if str(self.address_validation_method) == 'fedex.account':
+            ir_model_data = self.env['ir.model.data']
+            form_id = ir_model_data.get_object_reference('partner_address_validation', 'view_so_addrvalidate')[1]
+            return {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'so.addr_validate',
+                'views': [(form_id, 'form')],
+                'view_id': form_id,
+                'target': 'new',
+            }
+        else:
+            raise Warning(_('Please select a address validation method for your Fedex account'))
+
+    @api.model
+    def _method_get(self):
+        list = []
+        ups_acc_obj = self.env['ups.account']
+        fedex_acc_obj = self.env['fedex.account']
+        usps_acc_obj = self.env['usps.account']
+        ups_ids = ups_acc_obj.search([])
+        fedex_ids = fedex_acc_obj.search([])
+        usps_ids = usps_acc_obj.search([])
+
+        if ups_ids:
+            list.append(('ups.account', 'UPS'))
+
+        if fedex_ids:
+            list.append(('fedex.account', 'FedEx'))
+
+        if usps_ids:
+            list.append(('usps.account', 'USPS'))
+        return list
+
+    @api.multi
+    def _get_address_validation_method(self):
+        ids = self._ids
+        context = self._context
+        if context is None:
+            context = {}
+        user = self.env['res.users'].browse(ids)
+        return user and user.company_id and user.company_id.address_validation_method
 
     @api.one
     @api.depends('invoice_line')
@@ -127,8 +174,13 @@ class account_invoice(models.Model):
                     }
                     move_lines.append((0, 0, lines2))
         return move_lines
-    total_weight_net = fields.Float(compute='_total_weight_net', string='Total Net Weight', store=True,
+    total_weight_net = fields.Float(compute=_total_weight_net, string='Total Net Weight', store=True,
                                      help="The cumulated net weight of all the invoice lines.")
+    logis_company = fields.Many2one('logistic.company', string='Logistic Company',
+    # default=_get_logis_company, 
+                                        help='Name of the Logistics company providing the shipper services.')
+    address_validation_method = fields.Selection(_method_get, string='Address Validation Method',
+                                                 default=_get_address_validation_method)
     shipcharge = fields.Float(string='Shipping Cost', readonly=True)
     ship_method = fields.Char(string='Ship Method', size=128, readonly=True)
     ship_method_id = fields.Many2one('shipping.rate.config', string='Shipping Method', readonly=True)

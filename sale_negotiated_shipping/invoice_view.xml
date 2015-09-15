@@ -8,11 +8,22 @@
 			<field name="model">account.invoice</field>
 			<field name="inherit_id" ref="account.invoice_form"/>
 			<field name="arch" type="xml">
+			    <xpath expr="//field[@name='fiscal_position']" position="after">
+			        <group colspan="2" col="3">
+						<label string="Address Validation Method : " align="1.0" />
+						<field name="address_validation_method" nolabel="1" />
+						<button name="addr_validate_act_window" type="object"
+							string="Validate _Address"
+							groups="base.group_sale_salesman,base.group_erp_manager,base.group_sale_manager,base.group_system"  
+							context="{'default_sale_id': active_id}"
+							attrs="{'invisible':[('address_validation_method','in',['none', False])]}"/>
+					</group>
+			    </xpath>
 			     <xpath expr="//field[@name='amount_untaxed']" position="before">
 					<field name="total_weight_net"/>
 					<field name="shipcharge"/>
 					<field name="ship_method"/>
-				</xpath>     
+				</xpath>
 				<xpath expr="//button[@name='button_reset_taxes']" position="replace">
 					<button colspan="1" name="button_reset_taxes" states="draft" string="Compute Taxes" type="object" 
                     		groups="base.group_user" icon="terp-stock_format-scientific"/>
@@ -33,6 +44,17 @@
 			<field name="model">account.invoice</field>
 			<field name="inherit_id" ref="account.invoice_supplier_form"/>
 			<field name="arch" type="xml">
+			    <xpath expr="//field[@name='fiscal_position']" position="after">
+			        <group colspan="2" col="3">
+						<label string="Address Validation Method : " align="1.0" />
+						<field name="address_validation_method" nolabel="1" />
+						<button name="addr_validate_act_window" type="object"
+							string="Validate _Address"
+							groups="base.group_sale_salesman,base.group_erp_manager,base.group_sale_manager,base.group_system"  
+							context="{'default_sale_id': active_id}"
+							attrs="{'invisible':[('address_validation_method','in',['none', False])]}"/>
+					</group>
+			    </xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 					<field name="total_weight_net" />
 					<field name="shipcharge" />
@@ -42,7 +64,7 @@
 					<button colspan="1" name="button_reset_taxes" states="draft" string="Compute Taxes" type="object" 
 							groups="base.group_user" icon="terp-stock_format-scientific"/>
 					<button colspan="1" name="%(action_view_for_shipping_rate_wizard)d" string="Calculate Shipping" type="action" 
-							help="Displays the shipping wizard." states="draft" groups="base.group_user" />
+                    		help="Displays the shipping wizard." states="draft" groups="base.group_user" />
 				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="replace">
 					<field name="amount_untaxed" string="Net Total"/>

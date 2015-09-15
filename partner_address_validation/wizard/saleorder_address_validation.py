@@ -19,6 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 import time
 from openerp.exceptions import Warning
 from openerp import models, fields, api, _
@@ -31,7 +32,7 @@ class so_addr_validate(models.TransientModel):
     '''
     _name = "so.addr_validate"
     _description = "Sale order Address Validate"
-    _rec_name = 'inv_error_msg'
+    _rec_name = 'ship_error_msg'
 
     @api.multi
     def clean_memory(self):
@@ -95,26 +96,23 @@ class so_addr_validate(models.TransientModel):
 
     @api.multi
     def onchange_update(self, sale_id):
-        try:
-            ret = {}
-            if sale_id:
-                sale_obj=self.env['sale.order'].browse(sale_id)
-                res_obj= sale_obj.read(['partner_invoice_id', 'partner_shipping_id','address_validation_method', 'partner_id'])
-            for res in res_obj:
-                inv_addr_id = res['partner_invoice_id'][0]
-                ord_addr_id = res['partner_id']
-                ship_addr_id = res['partner_shipping_id'][0]
-                validation_method = res['address_validation_method']
-
+        ret = {}
+        if sale_id:
+            sale_obj=self.env['sale.order'].browse(sale_id)
+            res_obj= sale_obj.read(['partner_invoice_id', 'partner_shipping_id','address_validation_method', 'partner_id'])
+        for res in res_obj:
+            inv_addr_id = res['partner_invoice_id'][0]
+            ord_addr_id = res['partner_id']
+            ship_addr_id = res['partner_shipping_id'][0]
+            validation_method = res['address_validation_method']
+            if validation_method == 'fedex.account':
                 inv_return_data = self.env[validation_method].address_validation(inv_addr_id)
                 if inv_return_data['address_list']:
                     inv_return_data['address_list'][0]['select']=True
-                
-#                ret['inv_error_msg'] = inv_return_data['error_msg']
-
+    #                ret['inv_error_msg'] = inv_return_data['error_msg']
                 if inv_return_data['address_list']:
                     ret['inv_address_list'] = inv_return_data['address_list']
-
+    
                 if inv_addr_id == ord_addr_id:
                     ord_return_data = inv_return_data
                
@@ -132,16 +130,13 @@ class so_addr_validate(models.TransientModel):
                 ret['inv_address_id'] = inv_addr_id
                 ret['ord_address_id'] = ord_addr_id
                 ret['ship_address_id'] = ship_addr_id
-            return {'value':ret}
-        except (Exception):
-            raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account"))
-
+                return {'value':ret}
+            else:
+                 raise Warning(_("Please configure a fedex account in setting < Address Validation Method < FedEx Account!"))
 
     update_field =      fields.Boolean(string='Update')
     sale_id =           fields.Many2one('sale.order','Sale Order')
 
-    inv_error_msg =     fields.Text(string='Status', size=35 , readonly= True)
-    ord_error_msg =     fields.Text(string='Status' ,size=35, readonly= True)
     ship_error_msg =    fields.Text(string='Status' ,size=35 ,readonly= True)
 
     inv_address_list =  fields.One2many('response.data.model','so_validate_inv', string='Invoice Address List')
@@ -151,6 +146,5 @@ class so_addr_validate(models.TransientModel):
     inv_address_id =    fields.Many2one('res.partner', string='Invoice Address')
     ord_address_id =    fields.Many2one('res.partner', string='Order Address')
     ship_address_id =   fields.Many2one('res.partner', string='Ship Address')
-
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
