@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <report 
+            string="Label Report"
+            id="multiple_label_report1" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="shipping_api.report_multiple_label_picking"
+            file="shipping_api.report_multiple_label_picking"
+        />
+     </data>
+</openerp>

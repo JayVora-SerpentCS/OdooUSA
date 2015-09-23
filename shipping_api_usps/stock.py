@@ -481,7 +481,6 @@ class stock_move(models.Model):
             elif package_ids:
                 default_vals = {'package_id':package_ids[0], 'picking_id':[]}
             self.copy(res, default_vals)
-            print "\n res, default_vals ::::::::::::::::",res, default_vals
         return res
     
 

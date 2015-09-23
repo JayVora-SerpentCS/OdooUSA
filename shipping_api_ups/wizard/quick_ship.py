@@ -902,7 +902,6 @@ class quick_ship(models.TransientModel):
     
     @api.multi    
     def print_label(self):
-        print '==================wiz callll'
         ids=self._ids
         if not ids: return []
         ship_log_id = self.browse(self._ids)

@@ -133,7 +133,6 @@ class shipping_rate_wizard(models.TransientModel):
             if context['active_model'] == 'sale.order':
                 sale = sale_obj.browse(context['active_id'])
                 weight = sale.total_weight_net or 0.00
-                print
             elif context['active_model'] == 'account.invoice':
                 invoice = self.env['account.invoice'].browse(context['active_id'])
                 weight = invoice.total_weight_net or 0.00
