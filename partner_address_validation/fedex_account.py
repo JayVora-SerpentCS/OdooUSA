@@ -36,6 +36,7 @@ class fedex_account(models.Model):
 
     @api.multi
     def address_validation(self, address_id):
+        print "39 address_validation"
         """ This function is called from the wizard.Performs the actual computing in address validation """
         status = 0
         error_msg = ''
@@ -54,13 +55,16 @@ class fedex_account(models.Model):
                 address_id = address_id[0]
             partner_address = self.env['res.partner'].browse(address_id)
             from openerp.addons.partner_address_validation.fedex.config import FedexConfig
+            print "58",fedex_account.fedex_key,fedex_account.fedex_password,
             config_obj = FedexConfig(key=fedex_account.fedex_key,
                                      password=fedex_account.fedex_password,
                                      account_number=fedex_account.fedex_account_number,
                                      meter_number=fedex_account.fedex_meter_number,
                                      use_test_server=fedex_account.test_mode)
             from openerp.addons.partner_address_validation.fedex.services.address_validation_service import FedexAddressValidationRequest
+            print "65", fedex_account.test_mode, fedex_account.fedex_meter_number,fedex_account.fedex_account_number
             address = FedexAddressValidationRequest(config_obj)
+            print  address
             address1 = address.create_wsdl_object_of_type('AddressToValidate')
             address1.CompanyName = partner_address.name or ''
             address1.Address.StreetLines = [partner_address.street, partner_address.street2]
@@ -69,12 +73,14 @@ class fedex_account(models.Model):
             address1.Address.PostalCode = partner_address.zip
             address1.Address.CountryCode = partner_address.country_id and  partner_address.country_id.code or ''
             address1.Address.Residential = False
-            
+            print "75",config_obj
             address.add_address(address1)
-            
+            print '77'
             ret_list = []
             try:
+                print "80"
                 address.send_request()
+                print "81"
                 response = address.response
                 #Possible values ERROR, FAILURE, NOTE, WARNING, SUCCESS
                 if response.HighestSeverity == 'SUCCESS':

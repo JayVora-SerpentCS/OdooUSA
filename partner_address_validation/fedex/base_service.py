@@ -1,42 +1,22 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
-#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-
 """
 The L{base_service} module contains classes that form the low level foundations
 of the Web Service API. Things that many different kinds of requests have in
 common may be found here.
 
 In particular, the L{FedexBaseService} class handles most of the basic,
-repetetive setup work that most requests do.
+repetitive setup work that most requests do.
 """
+
 import os
 import logging
+
 import suds
 from suds.client import Client
 
 
 class FedexBaseServiceException(Exception):
     """
-    Exception: Serves as the base exception that other service-related 
+    Exception: Serves as the base exception that other service-related
     exception objects are sub-classed from.
     """
 
@@ -56,6 +36,7 @@ class FedexFailure(FedexBaseServiceException):
     Exception: The request could not be handled at this time. This is generally
     a server problem.
     """
+
     pass
 
 
@@ -63,6 +44,7 @@ class FedexError(FedexBaseServiceException):
     """
     Exception: These are generally problems with the client-provided data.
     """
+
     pass
 
 
@@ -71,9 +53,13 @@ class SchemaValidationError(FedexBaseServiceException):
     Exception: There is probably a problem in the data you provided.
     """
 
-    def __init__(self):
+    def __init__(self, fault):
         self.error_code = -1
         self.value = "suds encountered an error validating your data against this service's WSDL schema. Please double-check for missing or invalid values, filling all required fields."
+        try:
+            self.value += ' Details: {}'.format(fault.detail.desc)
+        except AttributeError:
+            pass
 
 
 class FedexBaseService(object):
@@ -82,6 +68,7 @@ class FedexBaseService(object):
     of the common SOAP objects created via suds and populates them with
     values from a L{FedexConfig} object, along with keyword arguments
     via L{__init__}.
+
     @note: This object should never be used directly, use one of the included
         sub-classes.
     """
@@ -91,18 +78,20 @@ class FedexBaseService(object):
         This constructor should only be called by children of the class. As is
         such, only the optional keyword arguments caught by C{**kwargs} will
         be documented.
+
         @type customer_transaction_id: L{str}
         @keyword customer_transaction_id: A user-specified identifier to
             differentiate this transaction from others. This value will be
             returned with the response from Fedex.
         """
+
         self.logger = logging.getLogger('fedex')
         """@ivar: Python logger instance with name 'fedex'."""
         self.config_obj = config_obj
         """@ivar: The FedexConfig object to pull auth info from."""
+
         # If the config object is set to use the test server, point
         # suds at the test server WSDL directory.
-
         if config_obj.use_test_server:
             self.logger.info("Using test server.")
             self.wsdl_path = os.path.join(config_obj.wsdl_path,
@@ -110,7 +99,9 @@ class FedexBaseService(object):
         else:
             self.logger.info("Using production server.")
             self.wsdl_path = os.path.join(config_obj.wsdl_path, wsdl_name)
-        self.client = Client('file://%s' % self.wsdl_path)
+
+        self.client = Client('file:///%s' % self.wsdl_path.lstrip('/'))
+
         self.VersionId = None
         """@ivar: Holds details on the version numbers of the WSDL."""
         self.WebAuthenticationDetail = None
@@ -124,6 +115,7 @@ class FedexBaseService(object):
             you can pull."""
         self.TransactionDetail = None
         """@ivar: Holds customer-specified transaction IDs."""
+
         self.__set_web_authentication_detail()
         self.__set_client_detail()
         self.__set_version_id()
@@ -135,10 +127,12 @@ class FedexBaseService(object):
         Sets up the WebAuthenticationDetail node. This is required for all
         requests.
         """
+
         # Start of the authentication stuff.
         WebAuthenticationCredential = self.client.factory.create('WebAuthenticationCredential')
         WebAuthenticationCredential.Key = self.config_obj.key
         WebAuthenticationCredential.Password = self.config_obj.password
+
         # Encapsulates the auth credentials.
         WebAuthenticationDetail = self.client.factory.create('WebAuthenticationDetail')
         WebAuthenticationDetail.UserCredential = WebAuthenticationCredential
@@ -149,17 +143,20 @@ class FedexBaseService(object):
         Sets up the ClientDetail node, which is required for all shipping
         related requests.
         """
+
         ClientDetail = self.client.factory.create('ClientDetail')
         ClientDetail.AccountNumber = self.config_obj.account_number
         ClientDetail.MeterNumber = self.config_obj.meter_number
         ClientDetail.IntegratorId = self.config_obj.integrator_id
-        # ClientDetail.Region = self.config_obj.express_region_code
+        if hasattr(ClientDetail, 'Region'):
+            ClientDetail.Region = self.config_obj.express_region_code
         self.ClientDetail = ClientDetail
 
     def __set_transaction_detail(self, *args, **kwargs):
         """
         Checks kwargs for 'customer_transaction_id' and sets it if present.
         """
+
         customer_transaction_id = kwargs.get('customer_transaction_id', False)
         if customer_transaction_id:
             TransactionDetail = self.client.factory.create('TransactionDetail')
@@ -171,6 +168,7 @@ class FedexBaseService(object):
         """
         Pulles the versioning info for the request from the child request.
         """
+
         VersionId = self.client.factory.create('VersionId')
         VersionId.ServiceId = self._version_info['service_id']
         VersionId.Major = self._version_info['major']
@@ -185,6 +183,7 @@ class FedexBaseService(object):
         any of the required WSDL objects so the user can just print their
         __str__() methods and see what they need to fill in.
         """
+
         pass
 
     def __check_response_for_fedex_error(self):
@@ -192,6 +191,7 @@ class FedexBaseService(object):
         This checks the response for general Fedex errors that aren't related
         to any one WSDL.
         """
+
         if self.response.HighestSeverity == "FAILURE":
             for notification in self.response.Notifications:
                 if notification.Severity == "FAILURE":
@@ -204,6 +204,7 @@ class FedexBaseService(object):
         specific to that module. For example, invalid tracking numbers in
         a Tracking request.
         """
+
         if self.response.HighestSeverity == "ERROR":
             for notification in self.response.Notifications:
                 if notification.Severity == "ERROR":
@@ -214,6 +215,7 @@ class FedexBaseService(object):
         """
         Creates and returns a WSDL object of the specified type.
         """
+
         return self.client.factory.create(type_name)
 
     def send_request(self, send_function=None):
@@ -225,6 +227,7 @@ class FedexBaseService(object):
             allows for overriding the default function in cases such as
             validation requests.
         """
+
         # Send the request and get the response back.
         try:
             # If the user has overridden the send function, use theirs
@@ -235,11 +238,11 @@ class FedexBaseService(object):
             else:
                 # Default scenario, business as usual.
                 self.response = self._assemble_and_send_request()
-        except suds.WebFault:
+        except suds.WebFault as fault:
             # When this happens, throw an informative message reminding the
             # user to check all required variables, making sure they are
-            # populated and valid.
-            raise SchemaValidationError()
+            # populated and valid
+            raise SchemaValidationError(fault.fault)
 
         # Check the response for general Fedex errors/failures that aren't
         # specific to any given WSDL/request.
@@ -247,6 +250,7 @@ class FedexBaseService(object):
         # Check the response for errors specific to the particular request.
         # This is handled by an overridden method on the child object.
         self._check_response_for_request_errors()
+
         # Debug output.
         self.logger.debug("== FEDEX QUERY RESULT ==")
         self.logger.debug(self.response)

@@ -12,7 +12,10 @@
 					 			<table class="table table condensed">
  								 	<tr>
  								 		<td>
- 								 		 	<span t-esc="o.logo" />					 		
+ 								 		 	<span>
+												<img t-att-src="'data:image/png;base64,%s' % o.logo"
+													height='1000' width='900' />
+											</span>					 		
  								 		</td>				 								 			
  								 	</tr>
 					 			</table>

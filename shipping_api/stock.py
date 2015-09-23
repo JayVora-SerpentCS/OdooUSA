@@ -184,16 +184,16 @@ class stock_picking(models.Model):
     def print_labels(self):
         ids = self._ids
         if not ids: return []
-        datas = {
-                'model': 'stock.picking',
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'shipping_api.report_multiple_label_picking',
+            'datas': {
+                'model': 'stock.packages',
                 'id': ids and ids[0] or False,
                 'ids': ids,
                 'report_type': 'pdf'
-            }
-        return {
-            'type': 'ir.actions.report.xml',
-            'report_name': 'report_multiple_label',
-            'datas': datas,
+                },
+            'nodestroy': True
         }
 
     @api.multi

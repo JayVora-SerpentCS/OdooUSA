@@ -96,6 +96,7 @@ class so_addr_validate(models.TransientModel):
 
     @api.multi
     def onchange_update(self, sale_id):
+        print "99 onchange_update"
         ret = {}
         if sale_id:
             sale_obj=self.env['sale.order'].browse(sale_id)

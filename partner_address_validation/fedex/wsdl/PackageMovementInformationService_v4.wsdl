@@ -70,7 +70,7 @@
 				</xs:annotation>
 				<xs:restriction base="xs:string">          
 					<xs:enumeration value="FDXE"/>
-			<xs:enumeration value="FDXG"/>
+          <xs:enumeration value="FDXG"/>
 				</xs:restriction>
 			</xs:simpleType>
 			<xs:complexType name="ClientDetail">
@@ -542,18 +542,18 @@
 			<documentation>Defines the response data element of the operation.</documentation>
 		</part>
 	</message>
-	<message name="PostalCodeInquiryRequest">
-		<part name="PostalCodeInquiryRequest" element="ns:PostalCodeInquiryRequest"/>
-	</message>
-	<message name="PostalCodeInquiryReply">
-		<part name="PostalCodeInquiryReply" element="ns:PostalCodeInquiryReply"/>
-	</message>
+  <message name="PostalCodeInquiryRequest">
+    <part name="PostalCodeInquiryRequest" element="ns:PostalCodeInquiryRequest"/>
+  </message>
+  <message name="PostalCodeInquiryReply">
+    <part name="PostalCodeInquiryReply" element="ns:PostalCodeInquiryReply"/>
+  </message>
 	<portType name="PackageMovementInformationPortType">
 		<documentation>This element describes the web service, the operations performed and the messages involved in the operation.</documentation>
-		<operation name="postalCodeInquiry" parameterOrder="PostalCodeInquiryRequest">
-			<input message="ns:PostalCodeInquiryRequest"/>
-			<output message="ns:PostalCodeInquiryReply"/>
-		</operation>
+    <operation name="postalCodeInquiry" parameterOrder="PostalCodeInquiryRequest">
+      <input message="ns:PostalCodeInquiryRequest"/>
+      <output message="ns:PostalCodeInquiryReply"/>
+    </operation>
 		<operation name="serviceAvailability" parameterOrder="ServiceAvailabilityRequest">
 			<input message="ns:ServiceAvailabilityRequest">
 				<documentation>Defines the input message type for the serviceAvailability operation.</documentation>
@@ -565,24 +565,24 @@
 	</portType>
 	<binding name="PackageMovementInformationServiceSoapBinding" type="ns:PackageMovementInformationPortType">
 		<s1:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-	<operation name="postalCodeInquiry">
-		<s1:operation soapAction="postalCodeInquiry" style="document"/>
-		<input>
-			<s1:body use="literal"/>
-		</input>
-		<output>
-		<s1:body use="literal"/>
-		</output>
+    <operation name="postalCodeInquiry">
+      <s1:operation soapAction="postalCodeInquiry" style="document"/>
+      <input>
+        <s1:body use="literal"/>
+      </input>
+      <output>
+        <s1:body use="literal"/>
+      </output>
     </operation>
-	<operation name="serviceAvailability">
-		<s1:operation soapAction="serviceAvailability" style="document"/>
-		<input>
-			<s1:body use="literal"/>
-		</input>
-		<output>
-			<s1:body use="literal"/>
-		</output>
-	</operation>
+		<operation name="serviceAvailability">
+			<s1:operation soapAction="serviceAvailability" style="document"/>
+			<input>
+				<s1:body use="literal"/>
+			</input>
+			<output>
+				<s1:body use="literal"/>
+			</output>
+		</operation>
 	</binding>
 	<service name="PackageMovementInformationService">
 		<port name="PackageMovementInformationServicePort" binding="ns:PackageMovementInformationServiceSoapBinding">

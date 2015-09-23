@@ -1,25 +1,3 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
-#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-
 """
 python-fedex API Documentation
 ==============================
@@ -74,4 +52,4 @@ If you have any questions, problems, ideas, or patch submissions, please visit
 our U{Google Code project<http://code.google.com/p/python-fedex/>} and enter
 an issue in the U{Issue Tracker<http://code.google.com/p/python-fedex/issues/list>}.
 """
-VERSION = '1.0.11'
+VERSION = '1.1.1'

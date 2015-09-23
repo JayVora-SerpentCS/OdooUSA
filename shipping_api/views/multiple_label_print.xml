@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<openerp> 
+<openerp>
 	<data>
-		<template id="report_multiple_label">
-			<t t-call="report.html_container"> 
-				<t t-foreach="docs" t-as="o"> 
-					 <t t-call="report.external_layout">
-					 	<div class="page">
-					 		<div class="oe_structure" />
-					 		<div class="row">
-					 			<table class="table table condensed">
-					 				<tr>
-					 					<td>
-					 						<span t-esc="o.stock_pick_ids.logo" />				
-					 					</td>
-					 				</tr>
-					 			</table>
-					 		</div>
-					 	</div> 
-					 </t>
+		<template id="report_multiple_label_picking">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="report.external_layout">
+						<div class="page">
+						    <t t-esc="o"/>
+							<div class="oe_structure" />
+							<div class="row">
+								<table class="table table-condensed">
+									<tbody>
+										<tr t-foreach="o.packages_ids" t-as='item'>
+											<td>
+												<span>
+													<img t-att-src="'data:image/png;base64,%s' % item.logo"
+														height='1000' width='900' />
+												</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</t>
 				</t>
 			</t>
-				
 		</template>
 	</data>
 </openerp>

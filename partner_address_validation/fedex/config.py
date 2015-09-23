@@ -1,25 +1,3 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
-#    Copyright (C) 2011-Today Serpent Consulting Services Pvt. Ltd. (<http://serpentcs.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-
 """
 The L{config} module contains the L{FedexConfig} class, which is passed to
 the Fedex API calls. It stores useful information such as your Web Services
@@ -31,7 +9,6 @@ L{FedexConfig} objects haphazardly. This is merely a design suggestion,
 treat it as such.
 """
 import os
-import sys
 
 
 class FedexConfig(object):
@@ -42,10 +19,8 @@ class FedexConfig(object):
     C{password} arguments and set the instance variables documented below
     at a later time if you must.
     """
-
-    def __init__(self, key, password, account_number=None, meter_number=None,
-                 integrator_id=None, wsdl_path=None, express_region_code=None,
-                 use_test_server=False):
+    def __init__(self, key, password, account_number=None, meter_number=None, freight_account_number=None,
+                 integrator_id=None, wsdl_path=None, express_region_code=None, use_test_server=False):
         """
         @type key: L{str}
         @param key: Developer test key.
@@ -58,6 +33,9 @@ class FedexConfig(object):
         @type meter_number: L{str}
         @keyword meter_number: The meter number sent to you by Fedex after
             registering for Web Services.
+        @type freight_account_number: L{str}
+        @keyword freight_account_number: The freight account number sent to you
+            by Fedex after registering for Web Services.
         @type integrator_id: L{str}
         @keyword integrator_id: The integrator string sent to you by Fedex after
             registering for Web Services.
@@ -78,16 +56,18 @@ class FedexConfig(object):
         """@ivar: Web Services account number."""
         self.meter_number = meter_number
         """@ivar: Web services meter number."""
+        self.freight_account_number = freight_account_number
+        """@ivar: Web Services freight accountnumber."""
         self.integrator_id = integrator_id
         """@ivar: Web services integrator ID."""
         self.express_region_code = express_region_code
         """@icar: Web services ExpressRegionCode"""
         self.use_test_server = use_test_server
         """@ivar: When True, point to the test server."""
+        
         # Allow overriding of the WDSL path.
-
         if wsdl_path == None:
-            self.wsdl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            self.wsdl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
                                           'wsdl')
         else:
             self.wsdl_path = wsdl_path

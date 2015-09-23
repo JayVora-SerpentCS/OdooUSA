@@ -42,6 +42,7 @@
         'views/summary_report.xml',
         'views/label_print.xml',
         'views/multiple_label_print.xml',
+        'views/report_view.xml',
         'views/package_packing_slip.xml',
         'report/shipping_report.xml',
         'res_company_view.xml',
